@@ -1,32 +1,54 @@
 import { Star, Truck, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import api from "../api";
+import { useQuery } from "@tanstack/react-query";
 
 export default function TrendingProducts() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [products, setProducts] = useState([]);
+  // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchTrendingProducts = async () => {
-      setLoading(true);
-      try {
-        // সার্চ লজিক বাদ দিয়ে সরাসরি ট্রেন্ডিং এপিআই কল করা হচ্ছে
-        const res = await api.get("/api/products/trending");
+  // useEffect(() => {
+  //   const fetchTrendingProducts = async () => {
+  //     setLoading(true);
+  //     try {
+  //       // সার্চ লজিক বাদ দিয়ে সরাসরি ট্রেন্ডিং এপিআই কল করা হচ্ছে
+  //       const res = await api.get("/api/products/trending");
 
-        // ডাটা ফরম্যাট হ্যান্ডলিং (সরাসরি অ্যারে বা অবজেক্টের ভেতর থাকলে)
-        const data = Array.isArray(res.data) ? res.data : (res.data.products || []);
-        setProducts(data);
-      } catch (err) {
-        console.error("Error fetching trending products:", err);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       // ডাটা ফরম্যাট হ্যান্ডলিং (সরাসরি অ্যারে বা অবজেক্টের ভেতর থাকলে)
+  //       const data = Array.isArray(res.data) ? res.data : (res.data.products || []);
+  //       setProducts(data);
+  //     } catch (err) {
+  //       console.error("Error fetching trending products:", err);
+  //       setProducts([]);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchTrendingProducts();
-  }, []); // ডিপেন্ডেন্সি অ্যারে খালি, তাই এটি শুধু একবার লোড হবে
+  //   fetchTrendingProducts();
+  // }, []); // ডিপেন্ডেন্সি অ্যারে খালি, তাই এটি শুধু একবার লোড হবে
+
+
+const fetchTrendingProducts = async () => {
+  const res = await api.get("/api/products/trending");
+  return Array.isArray(res.data)
+    ? res.data
+    : res.data?.products || [];
+};
+
+const {
+  data: products = [],
+  isLoading: loading,
+} = useQuery({
+  queryKey: ["trending-products"],
+  queryFn: fetchTrendingProducts,
+
+  staleTime: 1000 * 60 * 10,
+  refetchOnWindowFocus: false,
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+});
 
   if (loading) {
     return (

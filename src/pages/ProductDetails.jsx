@@ -497,77 +497,85 @@
 
 
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ShoppingCart, Heart, Share2, Star, Minus, Plus, ShieldCheck, Truck, ArrowRight } from "lucide-react";
 import { useCart } from '../context/CartContext';
 import api from "../api";
 import toast from "react-hot-toast";
 import TrendingProducts from "../components/TrendingProducts";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
   
-  const [product, setProduct] = useState(null);
-  const [selectedImage, setSelectedImage] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
+  // const [product, setProduct] = useState(null);
+  // const [selectedImage, setSelectedImage] = useState("");
+  // const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [wishlist, setWishlist] = useState(false);
   const [clicked, setClicked] = useState(false);
 
-  // useEffect(() => {
-  //   const fetchProduct = async () => {
-  //     try {
-  //       const res = await api.get(`/api/products`);
-  //       const found = res.data.find(p => p._id === id);
-  //       if (found) {
-  //         setProduct(found);
-  //         setSelectedImage(found.images[0]);
-  //         setSelectedColor(found.colors[0]);
-  //       }
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   };
-  //   fetchProduct();
-  // }, [id]);
 
-
-//   const handleRequestStock = async () => {
-//     setClicked(true);
-//   try {
-//     await api.post("/api/products/request-stock", {
-//   productId: product._id,
-//   userName: "guest"
-// });
-//     alert("Your stock request has been sent!");
-//   } catch (err) {
-//     console.error(err);
-//     alert("Failed to request stock: " + (err.response?.data?.message || err.message));
-//   }
-// };
-
-
-useEffect(() => {
+  // 🔥 FETCH FUNCTION
   const fetchProduct = async () => {
-    try {
-      const res = await api.get(`/api/products`);
-      const found = res.data.find(p => p._id === id);
-      if (found) {
-        // কনসোলে চেক করুন user অবজেক্ট কি না
-        console.log("Product Reviews Data:", found.reviews); 
-        setProduct(found);
-        setSelectedImage(found.images[0]);
-        setSelectedColor(found.colors[0]);
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    const res = await api.get(`/api/products`);
+    const found = res.data.find((p) => p._id === id);
+    return found;
   };
-  fetchProduct();
-}, [id]);
+
+  // 🔥 REACT QUERY (CACHE SYSTEM)
+  const {
+    data: product,
+    isLoading,
+  } = useQuery({
+    queryKey: ["product", id],
+    queryFn: fetchProduct,
+    staleTime: 1000 * 60 * 10, // 10 min cache
+    gcTime: 1000 * 60 * 30,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+  // 🔥 LOCAL UI STATE (ONLY FOR UI CONTROL)
+  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  // const [quantity, setQuantity] = useState(1);
+
+  // 🔥 INIT DEFAULT VALUES (NO API CALL)
+  React.useEffect(() => {
+    if (product) {
+      setSelectedImage(product.images?.[0]);
+      setSelectedColor(product.colors?.[0]);
+    }
+  }, [product]);
+
+
+
+
+// useEffect(() => {
+//   const fetchProduct = async () => {
+//     try {
+//       const res = await api.get(`/api/products`);
+//       const found = res.data.find(p => p._id === id);
+//       if (found) {
+//         // কনসোলে চেক করুন user অবজেক্ট কি না
+//         console.log("Product Reviews Data:", found.reviews); 
+//         setProduct(found);
+//         setSelectedImage(found.images[0]);
+//         setSelectedColor(found.colors[0]);
+//       }
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+//   fetchProduct();
+// }, [id]);
+
+
 
 const handleRequestStock = async () => {
   const request = api.post("/api/products/request-stock", {
@@ -589,9 +597,15 @@ const handleRequestStock = async () => {
   });
 };
 
+  if (isLoading || !product) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
-
-  if (!product) return <div className="h-screen flex items-center justify-center animate-pulse">Loading...</div>;
+  // if (!product) return <div className="h-screen flex items-center justify-center animate-pulse">Loading...</div>;
 
   const discount = product?.oldprice ? Math.round(((product.oldprice - product.price) / product.oldprice) * 100) : 0;
 

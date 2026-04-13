@@ -25,15 +25,29 @@ import Messages from "./components/Message";
 import MyOrders from "./components/profile/MyOrders";
 // import Messages from "./components/Message";
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
 
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      cacheTime: 1000 * 60 * 60,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  },
+});
 
 
   return (
     <AuthProvider>
       <Toaster position="top-center" reverseOrder={false} />
       <CartProvider>
+          <QueryClientProvider client={queryClient}> {/* 🔥 ADD */}
     <BrowserRouter>
 
      <ScrollToTop />
@@ -121,6 +135,7 @@ function App() {
 
 
     </BrowserRouter>
+    </QueryClientProvider>
     </CartProvider>
     </AuthProvider>
   );
