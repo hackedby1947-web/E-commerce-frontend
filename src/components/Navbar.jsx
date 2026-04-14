@@ -206,8 +206,14 @@ const handleCategoryClick = (cat) => {
         {/* DESKTOP VIEW */}
         <div className="hidden md:flex max-w-7xl mx-auto px-6 py-3 items-center justify-between border-b border-white/10">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold">M</div>
-            <h1 className="text-xl font-bold text-white">Mou Shop</h1>
+          <div className="w-9 h-9 rounded-xl overflow-hidden">
+  <img
+    src="/favicon.svg"
+    alt="RoyalcartX"
+    className="w-full h-full object-cover"
+  />
+</div>
+            <h1 className="text-xl font-bold text-white">RoyalcartX</h1>
           </Link>
 
           <div className="flex items-center gap-8">
