@@ -26,6 +26,7 @@ import MyOrders from "./components/profile/MyOrders";
 // import Messages from "./components/Message";
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import OrderSuccess from "./components/OrderSuccess";
 
 function App() {
 
@@ -60,9 +61,9 @@ const queryClient = new QueryClient({
         {/* <Route path="/profile" element={<Profile/>} /> */}
         <Route path="/cart" element={<Cart/>} />
         <Route path="/checkout" element={<Checkout />} />
-        {/* <Route path="/profile/edit-profile" element={<EditProfile />} /> */}
         <Route path="/product/:id/reviews" element={<ProductReviews />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
 
 
 
