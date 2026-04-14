@@ -205,18 +205,34 @@ const AddressForm = () => {
   // ========================
   // Fetch Divisions on mount
   // ========================
+  // useEffect(() => {
+  //   async function fetchDivisions() {
+  //     try {
+  //       const res = await fetch("http://localhost:5000/api/divisions");
+  //       const data = await res.json();
+  //       setDivisions(data);
+  //     } catch (err) {
+  //       console.error("Division fetch failed", err);
+  //     }
+  //   }
+  //   fetchDivisions();
+  // }, []);
+
   useEffect(() => {
-    async function fetchDivisions() {
-      try {
-        const res = await fetch("http://localhost:5000/api/divisions");
-        const data = await res.json();
-        setDivisions(data);
-      } catch (err) {
-        console.error("Division fetch failed", err);
-      }
+  const fetchDivisions = async () => {
+    try {
+      // এখানে api.get ব্যবহার করা হয়েছে
+      const res = await api.get("/api/divisions");
+      
+      // Axios-এ ডাটা সরাসরি res.data এর ভেতরে থাকে
+      setDivisions(res.data); 
+    } catch (err) {
+      console.error("Division fetch failed:", err);
     }
-    fetchDivisions();
-  }, []);
+  };
+
+  fetchDivisions();
+}, []);
 
   // ========================
   // Fetch districts when division changes
