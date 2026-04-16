@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState , useMemo, useContext} from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Trash2, Truck } from "lucide-react";
+import { Plus, Trash2, Truck } from "lucide-react";
 import { ErrorMessage } from "../validation/Validations";
 import {
   initialCheckoutData,
@@ -435,6 +435,7 @@ const handleConfirmOrder = async () => {
     });
   }
 };
+
 
   const handleRemove = (id) => {
     if (cartItems.length > 1) {
