@@ -5,7 +5,7 @@ export default function Hero() {
   const slides = [
     {
       id: 1,
-      image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=2070",
+      image: "https://res.cloudinary.com/dhmm1ruxa/image/upload/v1776249982/products/abgfy2fhjbszdh8n4idf.jpg",
       titleBangla: "নববর্ষ উৎসব",
       dateBangla: "৮ - ১৪ এপ্রিল",
       subtitleBangla: "নতুনর আমানদ, দশে সেরা পছনদ",
@@ -14,7 +14,7 @@ export default function Hero() {
     },
     {
       id: 2,
-      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2071",
+      image: "https://res.cloudinary.com/dhmm1ruxa/image/upload/v1776245098/products/ftahtlsm39jzfb1x28pd.jpg",
       titleBangla: "বৈশাখী মেলা",
       dateBangla: "১৪ - ২০ এপ্রিল",
       subtitleBangla: "সেরা ফ্যাশন, সেরা দামে",

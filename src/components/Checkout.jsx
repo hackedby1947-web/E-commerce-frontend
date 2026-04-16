@@ -443,15 +443,37 @@ const handleConfirmOrder = async () => {
     }
   };
 
+// useEffect(() => {
+//   const fetchAddress = async () => {
+//     try {
+//       const res = await api.get("/api/address"); // backend returns { success, data }
+//       const addresses = res.data.data;
+//       setSavedAddresses(addresses);
+//       // setSelectedAddress(addresses.length > 0 ? addresses[0] : null); // default first
+//             setSelectedAddress(null); // প্রথমে unselected
+
+//     } catch (err) {
+//       console.error(err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   fetchAddress();
+// }, []);
+
 useEffect(() => {
+  if (!user) {
+    setLoading(false); // guest হলে সরাসরি form দেখাবে
+    return;
+  }
+
   const fetchAddress = async () => {
     try {
-      const res = await api.get("/api/address"); // backend returns { success, data }
+      const res = await api.get("/api/address");
       const addresses = res.data.data;
       setSavedAddresses(addresses);
-      // setSelectedAddress(addresses.length > 0 ? addresses[0] : null); // default first
-            setSelectedAddress(null); // প্রথমে unselected
-
+      setSelectedAddress(null);
     } catch (err) {
       console.error(err);
     } finally {
@@ -460,7 +482,7 @@ useEffect(() => {
   };
 
   fetchAddress();
-}, []);
+}, [user]);
 
 
 

@@ -815,16 +815,22 @@ const handleRequestStock = async () => {
   <div className="bg-white p-6 md:p-8 rounded-3xl border border-gray-100 sticky top-10">
     <h2 className="text-xl font-bold mb-6 uppercase text-gray-400">Specifications</h2>
     <ul className="space-y-4">
-      {product.specifications?.toString().split('•').map((spec, i) => (
-        spec.trim() && (
-          <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
-            {/* ডট পয়েন্ট */}
-            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
-            {/* টেক্সট */}
-            <span className="leading-tight">{spec.trim()}</span>
-          </li>
-        )
-      ))}
+      {product.specifications
+        ?.toString()
+        // নিচের রেজেক্স (Regex) নিউলাইন, বুলেট বা ড্যাশ দিয়ে টেক্সটকে ভাগ করবে
+        .split(/\r?\n|•|-/) 
+        .map((spec, i) => {
+          const trimmedSpec = spec.trim();
+          // যদি টেক্সট খালি না থাকে তবেই রিটার্ন করবে
+          return trimmedSpec ? (
+            <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
+              {/* কাস্টম ডট পয়েন্ট */}
+              <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+              {/* টেক্সট */}
+              <span className="leading-relaxed">{trimmedSpec}</span>
+            </li>
+          ) : null;
+        })}
     </ul>
   </div>
 </div>
