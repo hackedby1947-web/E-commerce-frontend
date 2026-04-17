@@ -619,11 +619,11 @@ const handleRequestStock = async () => {
             {/* Left Column: Image Gallery */}
             <div className="p-0 md:p-8 bg-white">
               <div className="sticky top-10">
-                <div className="aspect-video md:aspect-square rounded-0 md:rounded-2xl overflow-hidden bg-gray-50 group relative">
+                <div className="aspect-4/3 md:aspect-auto md:h-140  rounded-0 md:rounded-2xl overflow-hidden bg-gray-50 group relative">
                   <img
                     src={selectedImage}
                     alt={product.title}
-                    className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-110"
                   />
                   {discount > 0 && (
                     <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] md:text-xs font-bold px-2 py-1 rounded-full shadow-lg">
