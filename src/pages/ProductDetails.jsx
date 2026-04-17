@@ -714,9 +714,17 @@ useEffect(() => {
             {/* Right Column: Product Info */}
             <div className="p-4 md:p-12 md:border-l border-gray-50">
               <div className="flex flex-col gap-1 md:gap-2  md:mb-6">
-                <h1 className="text-sm md:text-2xl font-extrabold text-gray-800 leading-tight">
+                {/* <h1 className="text-sm md:text-2xl font-extrabold text-gray-800 leading-tight">
                   {product.title}
-                </h1>
+                </h1> */}
+
+                             <h1 className={`font-extrabold text-gray-800 leading-tight transition-all duration-300 ${
+  product.title.split(' ').length > 3 
+    ? "text-sm md:text-2lg"   // ৩ শব্দের বেশি হলে ছোট ফন্ট
+    : "text-lg md:text-2xl"  // ৩ শব্দ বা তার কম হলে বড় ফন্ট
+}`}>
+  {product.title}
+</h1>
 
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2">
