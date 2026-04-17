@@ -65,6 +65,25 @@ const DeliveryForm = ({
           <ErrorMessage message={errors.fullName} />
         </div>
 
+
+             {/* Phone */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+          <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="Please enter your phone number"
+            className={`w-full p-3 border rounded-lg ${
+              errors.phone ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.phone && (
+            <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+          )}
+        </div>
+
         {/* Region / Division */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
@@ -84,23 +103,7 @@ const DeliveryForm = ({
           )}
         </div>
 
-        {/* Phone */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="Please enter your phone number"
-            className={`w-full p-3 border rounded-lg ${
-              errors.phone ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.phone && (
-            <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
-          )}
-        </div>
+   
 
         {/* City / District */}
         <div>
@@ -122,27 +125,7 @@ const DeliveryForm = ({
           )}
         </div>
 
-        {/* House */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Building / House No / Floor / Street
-          </label>
-          <input
-            type="text"
-            name="house"
-            value={formData.house}
-            onChange={handleChange}
-            placeholder="House# 123, Street# 123, ABC Road"
-            className={`w-full p-3 border rounded-lg ${
-              errors.house ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.house && (
-            <p className="text-red-500 text-xs mt-1">{errors.house}</p>
-          )}
-        </div>
-
-        {/* Upazila */}
+           {/* Upazila */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Area / Upazila</label>
           <select
@@ -162,8 +145,30 @@ const DeliveryForm = ({
           )}
         </div>
 
-        {/* Landmark */}
+        {/* House */}
         <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            House No / Floor / Street / Village
+          </label>
+          <input
+            type="text"
+            name="house"
+            value={formData.house}
+            onChange={handleChange}
+            placeholder="House# 123, Street# 123, ABC Road"
+            className={`w-full p-3 border rounded-lg ${
+              errors.house ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.house && (
+            <p className="text-red-500 text-xs mt-1">{errors.house}</p>
+          )}
+        </div>
+
+     
+
+        {/* Landmark */}
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Landmark / Nearby Place</label>
           <input
             type="text"
@@ -173,17 +178,17 @@ const DeliveryForm = ({
             placeholder="Please enter"
             className="w-full p-3 border border-gray-300 rounded-lg"
           />
-        </div>
+        </div> */}
 
         {/* Address */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Landmark / Nearby Place</label>
           <input
             type="text"
             name="address"
             value={formData.address}
             onChange={handleChange}
-            placeholder="Your full address"
+            placeholder="Landmark / Nearby Place"
             className={`w-full p-3 border rounded-lg ${
               errors.address ? "border-red-500" : "border-gray-300"
             }`}

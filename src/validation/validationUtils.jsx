@@ -41,7 +41,7 @@ export const initialCheckoutData = {
   house: "",
   area: "",
   landmark: "",
-  address: "",
+  // address: "",
 };
 
 export const checkoutRules = {
@@ -54,5 +54,5 @@ export const checkoutRules = {
   city: { required: true, message: errorMessages.required("City") },
   house: { required: true, message: errorMessages.required("House / Street") },
   area: { required: true, message: errorMessages.required("Area") },
-  address: { required: true, message: errorMessages.required("Address") },
+  // address: { required: true, message: errorMessages.required("Address") },
 };
