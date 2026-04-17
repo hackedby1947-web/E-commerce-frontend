@@ -505,7 +505,9 @@ import api from "../api";
 import toast from "react-hot-toast";
 import TrendingProducts from "../components/TrendingProducts";
 import { useQuery } from "@tanstack/react-query";
-
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { useRef, useEffect } from 'react';
+import 'swiper/css';
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -597,6 +599,18 @@ const handleRequestStock = async () => {
   });
 };
 
+const swiperRef = useRef(null); // Swiper-কে কন্ট্রোল করার জন্য Ref
+
+// থাম্বনেইল চেঞ্জ হলে স্লাইডারকে সেই পজিশনে নেওয়ার জন্য
+useEffect(() => {
+  if (swiperRef.current && product.images) {
+    const index = product.images.indexOf(selectedImage);
+    if (index !== -1) {
+      swiperRef.current.slideTo(index);
+    }
+  }
+}, [selectedImage, product?.images]);
+
   if (isLoading || !product) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -617,7 +631,7 @@ const handleRequestStock = async () => {
           <div className="grid grid-cols-1 md:grid-cols-2">
             
             {/* Left Column: Image Gallery */}
-            <div className="p-0 md:p-8 bg-white">
+            {/* <div className="p-0 md:p-8 bg-white">
               <div className="sticky top-10">
                 <div className="aspect-4/3 md:aspect-auto md:h-140  rounded-0 md:rounded-2xl overflow-hidden bg-gray-50 group relative">
                   <img
@@ -646,7 +660,56 @@ const handleRequestStock = async () => {
                   ))}
                 </div>
               </div>
-            </div>
+            </div> */}
+
+
+   <div className="p-0 md:p-8 bg-white">
+  <div className="sticky top-10">
+    {/* মোবাইলে aspect-square (Height-Width সমান) এবং পিসিতে md:h-140 */}
+    <div className="aspect-square md:aspect-auto md:h-140 rounded-0 md:rounded-2xl overflow-hidden bg-gray-50 group relative">
+      <Swiper
+        onSwiper={(swiper) => (swiperRef.current = swiper)}
+        onSlideChange={(swiper) => setSelectedImage(product.images[swiper.activeIndex])}
+        className="w-full h-full"
+      >
+        {product.images.map((img, i) => (
+          <SwiperSlide key={i}>
+            <img
+              src={img}
+              alt={product.title}
+              
+              className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-110"
+            />
+          </SwiperSlide>
+        ))}
+
+        {discount > 0 && (
+          <span className="absolute top-3 left-3 z-10 bg-red-600 text-white text-[10px] md:text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+            -{discount}% OFF
+          </span>
+        )}
+      </Swiper>
+    </div>
+    
+    {/* থাম্বনেইল সেকশন */}
+    <div className="flex gap-2 mt-3 md:mt-6 px-3 md:px-0 overflow-x-auto pb-2 no-scrollbar">
+      {product.images.map((img, i) => (
+        <button
+          key={i}
+          onClick={() => setSelectedImage(img)}
+          className={`relative min-w-15 h-15 md:min-w-17.5 md:h-17.5 rounded-lg md:rounded-xl overflow-hidden border-2 transition-all ${
+            selectedImage === img
+              ? "border-indigo-600 ring-2 ring-indigo-50"
+              : "border-gray-100 opacity-60"
+          }`}
+        >
+          <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+ 
 
             {/* Right Column: Product Info */}
             <div className="p-4 md:p-12 md:border-l border-gray-50">
