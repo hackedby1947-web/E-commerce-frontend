@@ -498,7 +498,7 @@
 
 
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { ShoppingCart, Heart, Share2, Star, Minus, Plus, ShieldCheck, Truck, ArrowRight } from "lucide-react";
 import { useCart } from '../context/CartContext';
 import api from "../api";
@@ -508,6 +508,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useRef, useEffect } from 'react';
 import 'swiper/css';
+import RelatedProducts from "../components/relatedProducts/RelatedProducts";
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -519,7 +520,7 @@ export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [wishlist, setWishlist] = useState(false);
   const [clicked, setClicked] = useState(false);
-
+const [hasRelated, setHasRelated] = useState(null);
 
   // 🔥 FETCH FUNCTION
   const fetchProduct = async () => {
@@ -610,6 +611,10 @@ useEffect(() => {
     }
   }
 }, [selectedImage, product?.images]);
+
+
+
+
 
   if (isLoading || !product || !product.images?.length) {
     return (
@@ -966,7 +971,19 @@ useEffect(() => {
               </div>
             </div>
           </div>
-<TrendingProducts/>
+{/* <TrendingProducts/> */}
+
+<RelatedProducts
+  // category={product?.category}
+  // currentId={product?._id}
+  category={product?.category}
+  currentId={product?._id}
+  onResult={(data) => setHasRelated(data.length > 0)}
+/>
+
+{hasRelated === false && <TrendingProducts />}
+
+
          
         </div>
 

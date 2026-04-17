@@ -27,6 +27,7 @@ import MyOrders from "./components/profile/MyOrders";
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import OrderSuccess from "./components/OrderSuccess";
+import RelatedPage from "./components/relatedProducts/RelatedPage";
 
 function App() {
 
@@ -64,7 +65,7 @@ const queryClient = new QueryClient({
         <Route path="/product/:id/reviews" element={<ProductReviews />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/order-success" element={<OrderSuccess />} />
-
+        <Route path="/category/:categoryName" element={<RelatedPage />} />
 
 
   {/* Protected Profile Route */}
