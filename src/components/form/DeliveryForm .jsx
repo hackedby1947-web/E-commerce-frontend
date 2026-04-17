@@ -58,7 +58,7 @@ const DeliveryForm = ({
             value={formData.fullName}
             onChange={handleChange}
             placeholder="Enter your first and last name"
-            className={`w-full p-3 border rounded-lg ${
+            className={`w-full p-3 border rounded-lg focus:outline-none transition-all ${
               errors.fullName ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -75,7 +75,7 @@ const DeliveryForm = ({
             value={formData.phone}
             onChange={handleChange}
             placeholder="Please enter your phone number"
-            className={`w-full p-3 border rounded-lg ${
+            className={`w-full p-3 border rounded-lg focus:outline-none transition-all ${
               errors.phone ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -85,34 +85,51 @@ const DeliveryForm = ({
         </div>
 
         {/* Region / Division */}
+        
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
-          <select
-            name="division"
-            value={formData.division}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-lg"
-          >
-            <option value="">Select Division</option>
-            {divisions.map(d => (
-              <option key={d._id} value={d._id}>{d.name}</option>
-            ))}
-          </select>
-          {errors.division && (
+          <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>  
+<div className="relative w-full flex items-center justify-center">
+  
+  <select
+    className="w-full p-3 border border-gray-300 rounded-lg appearance-none focus:outline-none transition-all bg-white"
+    name="division"
+    value={formData.division}
+    onChange={handleChange}
+  >
+    <option value="">Select Division</option>
+    {divisions.map(d => (
+      <option key={d._id} value={d._id}>{d.name}</option>
+    ))}
+  </select>
+  
+  {/* আইকনটিকে একদম ডানে না রেখে সেন্টারে বা টেক্সটের পাশে আনার জন্য */}
+  <div className="pointer-events-none absolute inset-y-0 right-1 flex items-center">
+    <svg 
+      className="h-4 w-4 text-gray-500" 
+      fill="none" 
+      stroke="currentColor" 
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+  
+</div>
+    {errors.division && (
             <p className="text-red-500 text-xs mt-1">{errors.division}</p>
           )}
-        </div>
-
-   
+ </div>
 
         {/* City / District */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+        <div className="relative w-full flex items-center justify-center">
+
           <select
             name="district"
             value={formData.district}
             onChange={handleChange}
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-lg appearance-none focus:outline-none transition-all bg-white"
             disabled={!districts.length}
           >
             <option value="">Select District</option>
@@ -120,27 +137,53 @@ const DeliveryForm = ({
               <option key={d._id} value={d._id}>{d.name}</option>
             ))}
           </select>
-          {errors.district && (
+         
+
+           <div className="pointer-events-none absolute inset-y-0 right-1 flex items-center">
+    <svg 
+      className="h-4 w-4 text-gray-500" 
+      fill="none" 
+      stroke="currentColor" 
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+        </div>
+         {errors.district && (
             <p className="text-red-500 text-xs mt-1">{errors.district}</p>
           )}
-        </div>
+</div>
 
            {/* Upazila */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Area / Upazila</label>
+        <div className="relative w-full flex items-center justify-center">
           <select
             name="upazila"
             value={formData.upazila}
             onChange={handleChange}
             disabled={!upazilas.length}
-            className="w-full p-3 border rounded-lg"
+            className="w-full p-3 border border-gray-300 rounded-lg appearance-none focus:outline-none transition-all bg-white"
+
           >
             <option value="">Select Upazila</option>
             {upazilas.map(u => (
               <option key={u._id} value={u._id}>{u.name}</option>
             ))}
           </select>
-          {errors.upazila && (
+          <div className="pointer-events-none absolute inset-y-0 right-1 flex items-center">
+    <svg 
+      className="h-4 w-4 text-gray-500" 
+      fill="none" 
+      stroke="currentColor" 
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+        </div>
+         {errors.upazila && (
             <p className="text-red-500 text-xs mt-1">{errors.upazila}</p>
           )}
         </div>
@@ -156,7 +199,7 @@ const DeliveryForm = ({
             value={formData.house}
             onChange={handleChange}
             placeholder="House# 123, Street# 123, ABC Road"
-            className={`w-full p-3 border rounded-lg ${
+            className={`w-full p-3 border rounded-lg focus:outline-none transition-all ${
               errors.house ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -189,7 +232,7 @@ const DeliveryForm = ({
             value={formData.address}
             onChange={handleChange}
             placeholder="Landmark / Nearby Place"
-            className={`w-full p-3 border rounded-lg ${
+            className={`w-full p-3 border rounded-lg focus:outline-none transition-all ${
               errors.address ? "border-red-500" : "border-gray-300"
             }`}
           />

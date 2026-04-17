@@ -725,8 +725,8 @@ useEffect(() => {
                 <h1 className={`font-extrabold text-gray-800 leading-tight transition-all duration-300 ${
 
   product.title.split(' ').length > 3 
-    ? "text-sm md:text-2lg"   // ৩ শব্দের বেশি হলে ছোট ফন্ট
-    : "text-lg md:text-2xl"  // ৩ শব্দ বা তার কম হলে বড় ফন্ট
+    ? "text-sm md:text-2xl"   // ৩ শব্দের বেশি হলে ছোট ফন্ট
+    : "text-lg md:text-2xl"  // ৩ শব্দ বা তার কম হলে বড় ফন্ট
 }`}>
   {product.title}
 </h1>
