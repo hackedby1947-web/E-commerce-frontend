@@ -692,7 +692,7 @@ useEffect(() => {
     </div>
     
     {/* থাম্বনেইল সেকশন */}
-    <div className="flex gap-2 mt-3 md:mt-6 px-3 md:px-0 overflow-x-auto pb-2 no-scrollbar">
+    <div className="flex gap-2 mt-2 md:mt-6 px-3 md:px-0 overflow-x-auto pb-2 no-scrollbar">
       {product.images.map((img, i) => (
         <button
           key={i}
@@ -713,7 +713,7 @@ useEffect(() => {
 
             {/* Right Column: Product Info */}
             <div className="p-4 md:p-12 md:border-l border-gray-50">
-              <div className="flex flex-col gap-1 md:gap-2 mb-4 md:mb-6">
+              <div className="flex flex-col gap-1 md:gap-2 mb-1 md:mb-6">
                 <h1 className="text-lg md:text-2xl font-extrabold text-gray-800 leading-tight">
                   {product.title}
                 </h1>
