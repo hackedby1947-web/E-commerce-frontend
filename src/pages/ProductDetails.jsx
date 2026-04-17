@@ -543,7 +543,7 @@ export default function ProductDetails() {
   });
 
   // 🔥 LOCAL UI STATE (ONLY FOR UI CONTROL)
-  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
   const [selectedColor, setSelectedColor] = useState("");
   // const [quantity, setQuantity] = useState(1);
 
@@ -603,7 +603,7 @@ const swiperRef = useRef(null); // Swiper-কে কন্ট্রোল কর
 
 // থাম্বনেইল চেঞ্জ হলে স্লাইডারকে সেই পজিশনে নেওয়ার জন্য
 useEffect(() => {
-  if (swiperRef.current && product.images) {
+  if (swiperRef.current && product?.images?.length) {
     const index = product.images.indexOf(selectedImage);
     if (index !== -1) {
       swiperRef.current.slideTo(index);
@@ -611,7 +611,7 @@ useEffect(() => {
   }
 }, [selectedImage, product?.images]);
 
-  if (isLoading || !product) {
+  if (isLoading || !product || !product.images?.length) {
     return (
       <div className="flex justify-center items-center h-screen">
         <p>Loading...</p>
@@ -669,14 +669,18 @@ useEffect(() => {
     <div className="aspect-square md:aspect-auto md:h-140 rounded-0 md:rounded-2xl overflow-hidden bg-gray-50 group relative">
       <Swiper
         onSwiper={(swiper) => (swiperRef.current = swiper)}
-        onSlideChange={(swiper) => setSelectedImage(product.images[swiper.activeIndex])}
+        // onSlideChange={(swiper) => setSelectedImage(product?.images?.[swiper.activeIndex])}
+        onSlideChange={(swiper) => {
+  if (!product?.images?.length) return;
+  setSelectedImage(product.images[swiper.activeIndex]);
+}}
         className="w-full h-full"
       >
-        {product.images.map((img, i) => (
+        {product?.images?.map((img, i) => (
           <SwiperSlide key={i}>
             <img
               src={img}
-              alt={product.title}
+              alt={product?.title}
               
               className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-110"
             />
@@ -693,7 +697,7 @@ useEffect(() => {
     
     {/* থাম্বনেইল সেকশন */}
     <div className="flex gap-2 mt-2 md:mt-6 px-3 md:px-0 overflow-x-auto md:pb-2 no-scrollbar">
-      {product.images.map((img, i) => (
+      {product?.images?.map((img, i) => (
         <button
           key={i}
           onClick={() => setSelectedImage(img)}
