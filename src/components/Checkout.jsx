@@ -265,86 +265,10 @@ useEffect(() => {
   }));
 }, [selectedAddress]);
 
-// const handleConfirmOrder = async () => {
 
-//   // Determine delivery info from selectedAddress বা formData
-//   const deliveryData = selectedAddress
-//     ? {
-//         fullName: selectedAddress.fullName || "",
-//         phoneNumber: selectedAddress.phone || "",
-//         region: selectedAddress.division?.name || "",
-//         city: selectedAddress.district?.name || "",
-//         area: selectedAddress.upazila?.name || "",
-//         buildingNo: selectedAddress.house || "",
-//         address: selectedAddress.address || "",
-//         landmark: selectedAddress.landmark || ""
-//       }
-//     : {
-//         fullName: formData.fullName || "",
-//         phoneNumber: formData.phone || "",
-//         region:
-//           (divisions.find(d => d._id === formData.division)?.name) || "",
-//         city:
-//           (districts.find(d => d._id === formData.district)?.name) || "",
-//         area:
-//           (upazilas.find(u => u._id === formData.upazila)?.name) || "",
-//         buildingNo: formData.house || "",
-//         address: formData.address || "",
-//         landmark: formData.landmark || ""
-//       };
 
-//   // Validate required fields
-//   const requiredFields = ["fullName", "phoneNumber", "region", "city", "area", "address"];
-//   const missingFields = requiredFields.filter(f => !deliveryData[f].trim());
 
-//   if (missingFields.length > 0) {
-//     alert("Delivery info incomplete: " + missingFields.join(", "));
-//     return;
-//   }
-
-//   try {
-//     const orderData = {
-//       user: user ? user._id : "guest",
-//       items: cartItems.map(item => ({
-//         productId: item._id || item.id,
-//         quantity: item.quantity || 1,
-//         selectedColor: item.selectedColor || null
-//       })),
-//       deliveryInfo: deliveryData
-//     };
-
-//     const { data } = await api.post("/api/orders", orderData);
-
-//     // Clear purchased items from cart
-//     setGlobalCartItems(prev =>
-//       prev.filter(item => !(item.selected && item.inStock))
-//     );
-//  toast.success('Order confirmed successfully! 🛍️', {
-//       duration: 2000,
-//       style: {
-//         borderRadius: '12px',
-//         background: '#333',
-//         color: '#fff',
-//       },
-//     });
-//     // alert("Order confirmed successfully!");
-//     navigate("/order-success", {
-//       state: { order: data.order },
-//       replace: true
-//     });
-
-//   } catch (error) {
-//    toast.error("অর্ডার ব্যর্থ হয়েছে: " + (error.response?.data?.message || "আবার চেষ্টা করুন"), {
-//     duration: 4000,
-//     style: {
-//       borderRadius: '12px',
-//       background: '#ef4444',
-//       color: '#fff',
-//     },
-//   });
-//   }
-// };
-
+// only Cash On Delivery (COD) available for now, so no payment integration yet. Order confirm করার সাথে সাথে অর্ডার প্লেস হয়ে যাবে।
 const handleConfirmOrder = async () => {
   // ১. ভ্যালিডেশন লজিক (যদি সেভ করা অ্যাড্রেস সিলেক্ট না থাকে)
   if (!selectedAddress) {
@@ -435,6 +359,71 @@ const handleConfirmOrder = async () => {
     });
   }
 };
+
+
+// Online Payment & Cash On Delivery integration kaj korbe
+// const handleConfirmOrder = async () => {
+//   // ১. ভ্যালিডেশন (আগের মতোই থাকবে)
+//   if (!selectedAddress) {
+//     const newErrors = {};
+//     if (!formData.fullName?.trim()) newErrors.fullName = "আপনার পুরো নাম লিখুন";
+//     if (!formData.phone?.trim()) newErrors.phone = "ফোন নম্বরটি প্রয়োজন";
+//     if (!formData.division) newErrors.division = "বিভাগ সিলেক্ট করুন";
+//     if (!formData.district) newErrors.district = "জেলা সিলেক্ট করুন";
+//     if (!formData.upazila) newErrors.upazila = "উপজেলা সিলেক্ট করুন";
+//     if (!formData.house?.trim()) newErrors.house = "বাসার ঠিকানা লিখুন";
+
+//     setErrors(newErrors);
+//     if (Object.keys(newErrors).length > 0) {
+//       toast.error("অনুগ্রহ করে সঠিক তথ্য দিয়ে ফর্মটি পূরণ করুন");
+//       return;
+//     }
+//   }
+
+//   // ২. ডেলিভারি ডাটা নির্ধারণ (আগের মতোই)
+//   const deliveryData = selectedAddress
+//     ? {
+//         fullName: selectedAddress.fullName || "",
+//         phoneNumber: selectedAddress.phone || "",
+//         region: selectedAddress.division?.name || "",
+//         city: selectedAddress.district?.name || "",
+//         area: selectedAddress.upazila?.name || "",
+//         buildingNo: selectedAddress.house || "",
+//         address: selectedAddress.address || "",
+//         landmark: selectedAddress.landmark || ""
+//       }
+//     : {
+//         fullName: formData.fullName || "",
+//         phoneNumber: formData.phone || "",
+//         region: (divisions.find(d => d._id === formData.division)?.name) || "",
+//         city: (districts.find(d => d._id === formData.district)?.name) || "",
+//         area: (upazilas.find(u => u._id === formData.upazila)?.name) || "",
+//         buildingNo: formData.house || "",
+//         address: formData.address || "",
+//         landmark: formData.landmark || ""
+//       };
+
+//   // ৩. অর্ডার ডাটা গুছিয়ে পেমেন্ট পেজে পাঠিয়ে দেওয়া
+//   const checkoutPayload = {
+//     items: cartItems.map(item => ({
+//       productId: item._id || item.id,
+//       title: item.title,
+//       image: item.images?.[0],
+//       quantity: item.quantity || 1,
+//       price: item.price,
+//       selectedColor: item.selectedColor || null
+//     })),
+//     deliveryInfo: deliveryData,
+//     itemsTotal,
+//     deliveryFee,
+//     grandTotal
+//   };
+
+//   // পেমেন্ট পেজে নেভিগেট করা
+//   navigate("/payment", { state: checkoutPayload });
+// };
+
+
 
 
   const handleRemove = (id) => {

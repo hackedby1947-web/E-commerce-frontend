@@ -28,6 +28,8 @@ import MyOrders from "./components/profile/MyOrders";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import OrderSuccess from "./components/OrderSuccess";
 import RelatedPage from "./components/relatedProducts/RelatedPage";
+import Payment from "./sslpayments/Payment";
+import PaymentError from "./sslpayments/PaymentError";
 
 function App() {
 
@@ -64,8 +66,15 @@ const queryClient = new QueryClient({
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/product/:id/reviews" element={<ProductReviews />} />
         <Route path="/contact" element={<Contact />} />
+        {/* <Route path="/order-success/:id" element={<OrderSuccess />} /> */}
         <Route path="/order-success" element={<OrderSuccess />} />
+
+
         <Route path="/category/:categoryName" element={<RelatedPage />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/payment-error" element={<PaymentError />} />
+
+
 
 
   {/* Protected Profile Route */}
