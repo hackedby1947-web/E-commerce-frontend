@@ -30,8 +30,10 @@ import OrderSuccess from "./components/OrderSuccess";
 import RelatedPage from "./components/relatedProducts/RelatedPage";
 import Payment from "./sslpayments/Payment";
 import PaymentError from "./sslpayments/PaymentError";
+import useVisitorTracker from './hooks/useVisitorTracker.js';
+import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
 
-function App() {
+
 
 
 const queryClient = new QueryClient({
@@ -46,6 +48,12 @@ const queryClient = new QueryClient({
   },
 });
 
+function TrackerWrapper() {
+  useVisitorTracker();
+  
+}
+
+function App() {
 
   return (
     <AuthProvider>
@@ -53,7 +61,7 @@ const queryClient = new QueryClient({
       <CartProvider>
           <QueryClientProvider client={queryClient}> {/* 🔥 ADD */}
     <BrowserRouter>
-
+<TrackerWrapper />
      <ScrollToTop />
       <Routes>
         <Route element={<Layout />}>
@@ -73,6 +81,8 @@ const queryClient = new QueryClient({
         <Route path="/category/:categoryName" element={<RelatedPage />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/payment-error" element={<PaymentError />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
 
 
 

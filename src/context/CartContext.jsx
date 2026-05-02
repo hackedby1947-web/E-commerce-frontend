@@ -18,16 +18,34 @@ export default function CartProvider({ children }) {
   }, [cartItems]);
 
   // প্রোডাক্ট অ্যাড করার ফাংশন
+// const addToCart = (product) => {
+//   setCartItems((prev) => {
+//     const isExist = prev.find((item) => item.id === product.id);
+//     if (isExist) {
+//       return prev.map((item) =>
+//         item.id === product.id 
+//           ? { ...item, quantity: item.quantity + product.quantity } // আগের সাথে নতুন quantity যোগ হবে
+//           : item
+//       );
+//     }
+//     return [...prev, { ...product, selected: true }];
+//   });
+// };
+
 const addToCart = (product) => {
   setCartItems((prev) => {
-    const isExist = prev.find((item) => item.id === product.id);
+    const isExist = prev.find(
+      (item) => item._id === product._id && item.selectedColor === product.selectedColor
+    );
+
     if (isExist) {
       return prev.map((item) =>
-        item.id === product.id 
-          ? { ...item, quantity: item.quantity + product.quantity } // আগের সাথে নতুন quantity যোগ হবে
+        item._id === product._id && item.selectedColor === product.selectedColor
+          ? { ...item, quantity: item.quantity + product.quantity }
           : item
       );
     }
+
     return [...prev, { ...product, selected: true }];
   });
 };

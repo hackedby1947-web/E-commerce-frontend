@@ -1,7 +1,9 @@
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Footer() {
+  const navigate = useNavigate();
+
   return (
     <footer className="bg-[#0f172a] text-white mt-20">
       {/* Upper Footer: Newsletter / Branding */}
@@ -66,7 +68,9 @@ export default function Footer() {
           <h3 className="text-lg font-bold text-white border-l-4 border-indigo-500 pl-3">পলিসি ও সাপোর্ট</h3>
           <ul className="space-y-3 text-gray-400 text-sm">
             <li className="hover:text-indigo-400 cursor-pointer">রিফান্ড পলিসি</li>
-            <li className="hover:text-indigo-400 cursor-pointer">গোপনীয়তা নীতি</li>
+            <li className="hover:text-indigo-400 cursor-pointer"
+            onClick={() => navigate('/privacy-policy')}
+            >গোপনীয়তা নীতি</li>
             <li className="hover:text-indigo-400 cursor-pointer">শর্তাবলী</li>
             <li className="hover:text-indigo-400 cursor-pointer">FAQs</li>
           </ul>

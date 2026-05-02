@@ -187,16 +187,12 @@
 
 // export default Messages;
 
+// src/components/Message.jsx
 import React, { useState, useEffect, useRef, useContext, useCallback } from "react";
 import { Send, ArrowLeft, User, Headset } from "lucide-react";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
-import { io } from "socket.io-client";
-
-// সকেট কানেকশন (আপনার ব্যাকএন্ড ইউআরএল অনুযায়ী পরিবর্তন করুন)
-// const socket = io("http://localhost:5000");
-const socket = io("https://api-royalcart-8iay.onrender.com");
-
+import socket from "../socket/socket.js"; // ✅ shared instance — আলাদা io() নয়
 
 const Messages = ({ userType = "customer" }) => {
   const { user } = useContext(AuthContext);
@@ -205,30 +201,23 @@ const Messages = ({ userType = "customer" }) => {
   const [messages, setMessages] = useState([]);
   const [contacts, setContacts] = useState([]);
   const chatEndRef = useRef(null);
-  
-  // রিয়েল-টাইম চেকিংয়ের জন্য Ref
   const selectedChatRef = useRef(null);
 
-
-  
-
-  // ১. সেশন আইডি রিফ-এ সেভ করা
+  // ১. selectedChat বদলালে room join করো
   useEffect(() => {
     if (selectedChat) {
       selectedChatRef.current = selectedChat.id;
-      // সকেট রুমে জয়েন করা
       socket.emit("joinChat", selectedChat.id);
     }
   }, [selectedChat]);
 
-  // ২. কনভারসেশন ফেচ করা (useCallback ব্যবহার করে যাতে লুপ না হয়)
+  // ২. conversations fetch
   const fetchConversations = useCallback(async () => {
     try {
       if (userType === "admin") {
         const res = await api.get("/api/messages/conversations");
         setContacts(res.data);
       } else if (user) {
-        // কাস্টমারের জন্য নিজের আইডি ই কন্টাক্ট
         const customerChat = { id: user._id, name: user.name };
         setContacts([customerChat]);
         setSelectedChat(customerChat);
@@ -242,35 +231,35 @@ const Messages = ({ userType = "customer" }) => {
     fetchConversations();
   }, [fetchConversations]);
 
-  // ৩. মেসেজ ফেচ করা
-  const fetchMessages = async (contactId) => {
+  // ৩. messages fetch
+  const fetchMessages = useCallback(async (contactId) => {
     try {
       const res = await api.get(`/api/messages/${contactId}`);
       setMessages(res.data);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (selectedChat) fetchMessages(selectedChat.id);
-  }, [selectedChat]);
+  }, [selectedChat, fetchMessages]);
 
-  // ৪. রিয়েল-টাইম সকেট লিসেনার (নতুন মেসেজ রিসিভ করা)
+  // ৪. ✅ Socket connect + realtime listener
   useEffect(() => {
+    // socket আগে থেকে connect না থাকলে connect করো
+    if (!socket.connected) socket.connect();
+
     const handleNewMessage = (msg) => {
       const msgUserId = msg.user?._id || msg.user;
-      
-      // যদি বর্তমান ওপেন থাকা চ্যাটের মেসেজ হয়, তবেই অ্যাড হবে
+
       if (selectedChatRef.current === msgUserId) {
         setMessages((prev) => {
-          // ডুপ্লিকেট মেসেজ চেক
           if (prev.some((m) => m._id === msg._id)) return prev;
           return [...prev, msg];
         });
       }
-      
-      // এডমিনের জন্য কন্টাক্ট লিস্ট আপডেট করা (লাস্ট মেসেজ)
+
       if (userType === "admin") {
         fetchConversations();
       }
@@ -280,12 +269,12 @@ const Messages = ({ userType = "customer" }) => {
     socket.on("newMessageAdmin", handleNewMessage);
 
     return () => {
-      socket.off("newMessage");
-      socket.off("newMessageAdmin");
+      socket.off("newMessage", handleNewMessage);      // ✅ handler reference দিয়ে off করো
+      socket.off("newMessageAdmin", handleNewMessage); // নইলে পুরানো listener থেকে যায়
     };
   }, [userType, fetchConversations]);
 
-  // ৫. মেসেজ সেন্ড করা
+  // ৫. message send
   const sendMessage = async () => {
     if (!messageText.trim() || !selectedChat) return;
 
@@ -293,11 +282,10 @@ const Messages = ({ userType = "customer" }) => {
       userId: selectedChat.id,
       name: selectedChat.name,
       text: messageText,
-      sender: userType === "admin" ? "admin" : "customer", 
+      sender: userType === "admin" ? "admin" : "customer",
     };
 
     try {
-      // শুধু সার্ভারে পাঠান, সকেট লিসেনার মেসেজটি স্ক্রিনে দেখাবে (ডাবল মেসেজ এড়াতে)
       await api.post("/api/messages/send", payload);
       setMessageText("");
     } catch (err) {
@@ -305,13 +293,14 @@ const Messages = ({ userType = "customer" }) => {
     }
   };
 
+  // ৬. auto scroll
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
     <div className="flex h-[85vh] bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden m-2 md:m-5">
-      {/* Sidebar - কাস্টমারের জন্য হাইড করা যেতে পারে */}
+      {/* Sidebar — admin only */}
       {userType === "admin" && (
         <div className={`w-full md:w-80 bg-gray-50 border-r border-gray-200 flex flex-col ${selectedChat ? 'hidden md:flex' : 'flex'}`}>
           <div className="p-6 border-b bg-white">
@@ -323,17 +312,19 @@ const Messages = ({ userType = "customer" }) => {
                 key={c.id}
                 onClick={() => setSelectedChat(c)}
                 className={`flex items-center gap-3 p-4 cursor-pointer rounded-xl transition-all duration-200 ${
-                  selectedChat?.id === c.id 
-                  ? "bg-indigo-600 text-white shadow-md" 
-                  : "hover:bg-indigo-50 text-gray-700"
+                  selectedChat?.id === c.id
+                    ? "bg-indigo-600 text-white shadow-md"
+                    : "hover:bg-indigo-50 text-gray-700"
                 }`}
               >
                 <div className={`p-2 rounded-full ${selectedChat?.id === c.id ? "bg-indigo-500" : "bg-gray-200"}`}>
                   <User size={20} />
                 </div>
                 <div className="flex flex-col">
-                    <span className="font-medium">{c.name}</span>
-                    {c.unread > 0 && <span className="text-[10px] bg-red-500 text-white w-fit px-2 rounded-full">New</span>}
+                  <span className="font-medium">{c.name}</span>
+                  {c.unread > 0 && (
+                    <span className="text-[10px] bg-red-500 text-white w-fit px-2 rounded-full">New</span>
+                  )}
                 </div>
               </div>
             ))}
@@ -345,7 +336,6 @@ const Messages = ({ userType = "customer" }) => {
       <div className={`flex-1 flex flex-col bg-[#F8F9FD] ${!selectedChat && userType === 'admin' ? 'hidden md:flex' : 'flex'}`}>
         {selectedChat ? (
           <>
-            {/* Header */}
             <div className="px-6 py-4 bg-white border-b flex items-center justify-between shadow-sm">
               <div className="flex items-center gap-4">
                 {userType === "admin" && (
@@ -368,18 +358,15 @@ const Messages = ({ userType = "customer" }) => {
               </div>
             </div>
 
-            {/* Message Area */}
             <div className="flex-1 p-6 overflow-y-auto space-y-4">
               {messages.map((msg) => {
-                // কাস্টমারের জন্য সে নিজে সেন্ডার হলে ডান দিকে দেখাবে
                 const isMe = userType === "admin" ? msg.sender === "admin" : msg.sender !== "admin";
-                
                 return (
                   // eslint-disable-next-line react-hooks/purity
                   <div key={msg._id || Math.random()} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
                     <div className={`max-w-[75%] md:max-w-[60%] p-4 shadow-sm ${
-                      isMe 
-                        ? "bg-indigo-600 text-white rounded-2xl rounded-tr-none" 
+                      isMe
+                        ? "bg-indigo-600 text-white rounded-2xl rounded-tr-none"
                         : "bg-white text-gray-800 border border-gray-100 rounded-2xl rounded-tl-none"
                     }`}>
                       <p className="text-[15px] leading-relaxed">{msg.text}</p>
@@ -393,7 +380,6 @@ const Messages = ({ userType = "customer" }) => {
               <div ref={chatEndRef} />
             </div>
 
-            {/* Input Area */}
             <div className="p-4 bg-white border-t border-gray-100">
               <div className="max-w-4xl mx-auto flex items-center gap-3 bg-gray-50 p-2 rounded-2xl border border-gray-200">
                 <input
@@ -415,8 +401,8 @@ const Messages = ({ userType = "customer" }) => {
           </>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
-             <Headset size={64} className="mb-4 opacity-20" />
-             <p className="text-lg font-medium">Select a conversation to start</p>
+            <Headset size={64} className="mb-4 opacity-20" />
+            <p className="text-lg font-medium">Select a conversation to start</p>
           </div>
         )}
       </div>
