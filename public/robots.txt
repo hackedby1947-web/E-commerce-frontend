@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
+Disallow: /cgi-bin/
+
+# Block AI Bots that you don't want
+User-agent: GPTBot
+Disallow: /
+User-agent: CCBot
+Disallow: /
+User-agent: Google-Extended
+Disallow: /
 
 Sitemap: https://www.royalcartx.com/sitemap.xml
