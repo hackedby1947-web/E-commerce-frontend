@@ -321,15 +321,35 @@ const handleConfirmOrder = async () => {
 
   // ৩. অর্ডার সাবমিশন প্রসেস
   try {
-    const orderData = {
-      user: user ? user._id : "guest",
-      items: cartItems.map(item => ({
-        productId: item._id || item.id,
-        quantity: item.quantity || 1,
-        selectedColor: item.selectedColor || null
-      })),
-      deliveryInfo: deliveryData
-    };
+    // const orderData = {
+    //   user: user ? user._id : "guest",
+    //   items: cartItems.map(item => ({
+    //     productId: item._id || item.id,
+    //     quantity: item.quantity || 1,
+    //     selectedColor: item.selectedColor || null
+    //   })),
+    //   deliveryInfo: deliveryData
+    // };
+
+    // Facebook cookies read করার helper
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return null;
+};
+
+const orderData = {
+  user: user ? user._id : "guest",
+  items: cartItems.map(item => ({
+    productId: item._id || item.id,
+    quantity: item.quantity || 1,
+    selectedColor: item.selectedColor || null
+  })),
+  deliveryInfo: deliveryData,
+  fbp: getCookie("_fbp"),   // ← এটুকু add করো
+  fbc: getCookie("_fbc"),   // ← এটুকু add করো
+};
 
     const { data } = await api.post("/api/orders", orderData);
 
