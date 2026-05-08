@@ -173,7 +173,7 @@ export default function ProductReviews() {
           className="fixed inset-0 bg-black/90 flex items-center justify-center"
           onClick={() => setSelectedImages(null)}
         >
-          <button className="absolute top-6 right-6 text-white">
+          <button aria-label="মোডাল বন্ধ করুন" className="absolute top-6 right-6 text-white">
             <X />
           </button>
           <img

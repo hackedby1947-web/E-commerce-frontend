@@ -146,7 +146,7 @@ const Profile = () => {
                 </div>
               </div>
             ))}
-            <button onClick={handleLogout} className="w-full flex items-center gap-3 px-8 py-2 border-t border-slate-50 text-slate-500 hover:text-rose-600 text-[13px] font-medium">
+            <button onClick={handleLogout} aria-label="লগআউট করুন" className="w-full flex items-center gap-3 px-8 py-2 border-t border-slate-50 text-slate-500 hover:text-rose-600 text-[13px] font-medium">
               <LogOut size={16} /> <span>Logout</span>
             </button>
           </nav>
@@ -173,7 +173,7 @@ const Profile = () => {
                   <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
                      <User size={30} className="text-slate-300" />
                   </div>
-                  <button className="absolute bottom-0 right-0 bg-white shadow-md p-1 rounded-full border border-slate-100 md:hidden">
+                  <button aria-label="প্রোফাইল ছবি পরিবর্তন করুন" className="absolute bottom-0 right-0 bg-white shadow-md p-1 rounded-full border border-slate-100 md:hidden">
                     <Camera size={12} className="text-slate-600" />
                   </button>
                 </div>
@@ -186,7 +186,7 @@ const Profile = () => {
                       
                       >Edit Profile</button>
                       </Link>
-                      <button className="text-[10px] font-bold text-pink-600 border border-pink-100 px-3 py-1 rounded">My Voucher</button>
+                      <button aria-label="আমার ভাউচার দেখুন" className="text-[10px] font-bold text-pink-600 border border-pink-100 px-3 py-1 rounded">My Voucher</button>
                    </div>
                 </div>
              </div>

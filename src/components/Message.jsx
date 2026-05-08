@@ -111,7 +111,7 @@
 //             <div className="px-6 py-4 bg-white border-b flex items-center justify-between shadow-sm">
 //               <div className="flex items-center gap-4">
 //                 {userType === "admin" && (
-//                   <button onClick={() => setSelectedChat(null)} className="md:hidden p-2 hover:bg-gray-100 rounded-full">
+//                   <button onClick={() => setSelectedChat(null)} aria-label="চ্যাট বন্ধ করুন" className="md:hidden p-2 hover:bg-gray-100 rounded-full">
 //                     <ArrowLeft size={20} className="text-gray-600" />
 //                   </button>
 //                 )}
@@ -339,7 +339,7 @@ const Messages = ({ userType = "customer" }) => {
             <div className="px-6 py-4 bg-white border-b flex items-center justify-between shadow-sm">
               <div className="flex items-center gap-4">
                 {userType === "admin" && (
-                  <button onClick={() => setSelectedChat(null)} className="md:hidden p-2 hover:bg-gray-100 rounded-full">
+                  <button onClick={() => setSelectedChat(null)} aria-label="চ্যাট বন্ধ করুন" className="md:hidden p-2 hover:bg-gray-100 rounded-full">
                     <ArrowLeft size={20} className="text-gray-600" />
                   </button>
                 )}

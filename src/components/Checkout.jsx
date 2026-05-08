@@ -34,8 +34,10 @@ const Checkout = () => {
  
 });
 
+  // location.state না থাকলে redirect — state ছাড়া checkout এ আসা ঠিক না
   const singleProduct = location.state?.productDetails;
   const multipleProducts = location.state?.items;
+  const hasState = !!(singleProduct || (Array.isArray(multipleProducts) && multipleProducts.length > 0));
  
   const [divisions, setDivisions] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -69,10 +71,12 @@ const hasFreeDelivery = cartItems.some(item => !item.deliveryEnabled);
 const hasPaidDelivery = cartItems.some(item => item.deliveryEnabled);
 
   useEffect(() => {
-    if (!products.length) {
+    // state না থাকলে (direct URL access বা refresh) redirect করো
+    // কিন্তু address loading এর জন্য একটু সময় দাও
+    if (!hasState) {
       navigate("/", { replace: true });
     }
-  }, [products, navigate]);
+  }, [hasState, navigate]);
 
 
 // ১. আইটেমগুলোর বেস প্রাইস (ডেলিভারি ছাড়া)
@@ -426,12 +430,18 @@ const handleConfirmOrder = async () => {
 
 
 
+
+
   const handleRemove = (id) => {
-    if (cartItems.length > 1) {
-      const updated = cartItems.filter((item) => item.id !== id);
-      setCartItems(updated);
-    }
-  };
+  if (cartItems.length > 1) {
+    // এখানে item.id এর বদলে item._id ব্যবহার করুন
+    const updated = cartItems.filter((item) => item._id !== id);
+    setCartItems(updated);
+    
+    // ঐচ্ছিক: রিমুভ করার পর একটি টোস্ট দেখাতে পারেন
+    toast.error('আইটেমটি রিমুভ করা হয়েছে');
+  }
+};
 
 // useEffect(() => {
 //   const fetchAddress = async () => {
@@ -498,9 +508,10 @@ useEffect(() => {
       <h2 className="text-xl font-bold text-gray-800">Select Delivery Address</h2>
       <button
           onClick={() => {
-    setShowForm(true);      // form show করবে
-    setSelectedAddress(null); // saved address unselect করবে
+    setShowForm(true);
+    setSelectedAddress(null);
   }}
+        aria-label="নতুন ঠিকানা যোগ করুন"
         className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition"
       >
         + Add New
@@ -574,7 +585,7 @@ useEffect(() => {
             </div>
 
               <p className="text-sm font-medium text-gray-700">Delivery or Pickup</p>
- {/* {cartItems.map((product) => {
+    {/* {cartItems.map((product) => {
               
 
               return (
@@ -642,71 +653,74 @@ useEffect(() => {
   </div>
 )}
 
-            {cartItems.map((product) => {
-              const discount = product.oldprice
-                ? Math.round(((product.oldprice - product.price) / product.oldprice) * 100)
-                : 0;
+           {cartItems.map((product) => {
+  const discount = product.oldprice
+    ? Math.round(((product.oldprice - product.price) / product.oldprice) * 100)
+    : 0;
 
-              return (
-                <div key={product._id} className="flex flex-col sm:flex-row items-center py-6 border-t border-gray-100 mt-4 gap-6">
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="w-24 h-24 bg-gray-50 rounded-xl flex items-center justify-center border">
-                      <img src={product.images?.[0]} alt={product.title} className="object-cover w-full h-full"/>
-                    </div>
+  return (
+    <div key={product._id} className="flex items-center py-4 border-t border-gray-100 mt-2 gap-3 sm:gap-6">
+      {/* 1. Image Section */}
+      <div className="w-16 h-16 sm:w-24 sm:h-24 bg-gray-50 rounded-lg shrink-0 flex items-center justify-center border overflow-hidden">
+        <img src={product.images?.[0]} alt={product.title} className="object-cover w-full h-full" />
+      </div>
 
-                    <div>
-                      <h3 className="text-[15px] font-bold text-gray-800">{product.title}
-           
-                      </h3>
-                      <p className="text-xs text-gray-500">Color: {product.selectedColor || "N/A"}</p>
-                      <div className="flex items-center gap-1 text-cyan-600">
-                        <Truck size={12} />
-                         {!product.deliveryEnabled && (
-                        <span className="text-[10px] font-bold uppercase">
-                          Free Shipping
+      {/* 2. Details Section (Title, Color, Price) */}
+      <div className="flex-1 min-w-0">
+        <h3 className="text-sm sm:text-[15px] font-bold text-gray-800 truncate leading-tight">
+          {product.title}
+        </h3>
+        <p className="text-[10px] sm:text-xs text-gray-500">Color: {product.selectedColor || "N/A"}</p>
+        
+        {/* Price for Mobile (Visible only on small screens) */}
+        <div className="flex items-baseline gap-2 mt-1 sm:hidden">
+          <span className="text-orange-600 font-bold text-base">৳{product.price}</span>
+          {product.oldprice && (
+            <span className="text-[12px] font-medium line-through text-gray-400">৳{product.oldprice}</span>
+          )}
+        </div>
+      </div>
 
-                        </span>
-                      )}
-                      </div>
-                    </div>
-                  </div>
+      {/* 3. Desktop Price Section (Hidden on Mobile) */}
+      <div className="hidden sm:flex flex-col items-center">
+        <p className="text-xl text-orange-600 font-black">৳ {product.price}</p>
+        <p className="text-xs line-through text-gray-400">৳ {product.oldprice}</p>
+        <p className="text-xs font-bold text-green-600">-{discount}%</p>
+      </div>
 
-                  <div className="flex flex-col items-center">
-                    <p className="text-2xl text-orange-600 font-black">৳ {product.price}</p>
-                    <p className="text-xs line-through text-gray-400">৳ {product.oldprice}</p>
-                    <p className="text-xs font-bold">-{discount}%</p>
-                  </div>
-
-                  <div className="flex flex-col items-end gap-2">
-                    <p className="text-xs">Qty: <span className="font-bold">{product.quantity || 1}</span></p>
-                    <button
-                      onClick={() => handleRemove(product.id)}
-                      disabled={cartItems.length <= 1}
-                      className={`p-2 rounded-full transition-all duration-300 shadow-md ${
-                        cartItems.length > 1
-                          ? "bg-gray-50 hover:bg-red-100 text-gray-400 hover:text-red-500"
-                          : "bg-gray-100 text-gray-200 cursor-not-allowed opacity-50"
-                      }`}
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+      {/* 4. Quantity and Delete Section */}
+      <div className="flex flex-col items-end gap-1 sm:gap-2 shrink-0">
+        <p className="text-[10px] sm:text-xs">
+          Qty: <span className="font-bold">{product.quantity || 1}</span>
+        </p>
+        <button
+          onClick={() => handleRemove(product._id)}
+          disabled={cartItems.length <= 1}
+          className={`p-1.5 sm:p-2 rounded-full transition-all duration-300 shadow-sm ${
+            cartItems.length > 1
+              ? "bg-gray-50 hover:bg-red-100 text-gray-400 hover:text-red-500"
+              : "bg-gray-50 text-gray-200 cursor-not-allowed opacity-50"
+          }`}
+        >
+          <Trash2 size={16} className="sm:w-5 sm:h-5" />
+        </button>
+      </div>
+    </div>
+  );
+})}
           </div>
         </div>
 
         {/* RIGHT SIDE SUMMARY */}
         <div className="space-y-6">
           {/* PROMOTION BOX */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          {/* <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Promotion</h3>
             <div className="flex gap-2">
               <input type="text" placeholder="Enter Promo Code" className="flex-1 p-2.5 border border-gray-300 rounded-lg focus:outline-none" />
-              <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-4 py-2 rounded-lg transition text-sm">APPLY</button>
+              <button aria-label="কুপন প্রয়োগ করুন" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-4 py-2 rounded-lg transition text-sm">APPLY</button>
             </div>
-          </div>
+          </div> */}
 
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div className="flex justify-between mb-2">

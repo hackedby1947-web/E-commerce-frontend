@@ -23,7 +23,7 @@ export default function Footer() {
               placeholder="আপনার ইমেইল..." 
               className="bg-gray-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none w-full md:w-64"
             />
-            <button className="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-xl font-medium transition-all active:scale-95">
+            <button aria-label="সাবস্ক্রাইব করুন" className="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-xl font-medium transition-all active:scale-95">
               Subscribe
             </button>
           </div>

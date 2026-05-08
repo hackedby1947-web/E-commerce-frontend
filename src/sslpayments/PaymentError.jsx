@@ -36,7 +36,7 @@ const PaymentError = () => {
           </button>
 
           {/* Support Button */}
-          <button className="flex items-center justify-center gap-2 border-2 border-gray-100 py-4 rounded-2xl font-bold hover:bg-gray-50 transition-all text-gray-700 active:scale-95">
+          <button aria-label="হোমে ফিরে যান" className="flex items-center justify-center gap-2 border-2 border-gray-100 py-4 rounded-2xl font-bold hover:bg-gray-50 transition-all text-gray-700 active:scale-95">
             <MessageSquare size={20} /> কাস্টমার সাপোর্টে কথা বলুন
           </button>
         </div>

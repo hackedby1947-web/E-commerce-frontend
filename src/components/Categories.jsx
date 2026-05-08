@@ -45,7 +45,8 @@
 //               {/* Image Section - Height কমানো হয়েছে (মোবাইলে h-40, পিসিতে h-44) */}
 //               <div className="relative">
 //                 <img
-//                   src={prod.images[0]}
+//                   src={thumbImage(prod.images[0])}
+                    // loading="lazy"
 //                   alt={prod.title}
 //                   className="w-full h-40 md:h-44 object-cover" // আগে h-56 ছিল, এখন কমানো হয়েছে
 //                 />
@@ -184,7 +185,8 @@
 //                 {/* Image Section */}
 //                 <div className="relative">
 //                   <img
-//                     src={prod.images[0]}
+//                     src={thumbImage(prod.images[0])}
+                    // loading="lazy"
 //                     alt={prod.title}
 //                     className="w-full h-40 md:h-44 object-cover"
 //                   />
@@ -252,6 +254,7 @@
 
 
 import { Loader2, Star, Truck } from "lucide-react";
+import { thumbImage } from "../utils/imageOptimizer";
 import { Link, useLocation } from "react-router-dom";
 import api from "../api";
 import { useQuery } from "@tanstack/react-query";
@@ -326,7 +329,8 @@ export default function Categories() {
 
                 <div className="relative">
                   <img
-                    src={prod.images[0]}
+                    src={thumbImage(prod.images[0])}
+                    loading="lazy"
                     alt={prod.title}
                     className="w-full h-40 md:h-44 object-cover"
                   />

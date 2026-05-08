@@ -1,4 +1,5 @@
 import { Star, Truck, Loader2 } from "lucide-react";
+import { thumbImage } from "../utils/imageOptimizer";
 import { Link } from "react-router-dom";
 // import { useState, useEffect } from "react";
 import api from "../api";
@@ -76,7 +77,8 @@ const {
               {/* Image Section */}
               <div className="relative">
                 <img
-                  src={prod.images?.[0]}
+                  src={thumbImage(prod.images?.[0])}
+                  loading="lazy"
                   alt={prod.title}
                   className="w-full h-40 md:h-44 object-cover"
                 />

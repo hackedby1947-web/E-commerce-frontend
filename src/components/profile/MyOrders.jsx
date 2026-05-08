@@ -572,7 +572,7 @@ const MyOrders = () => {
             <h2 className="text-xl md:text-2xl font-black text-slate-900">My Orders</h2>
             <p className="text-[11px] md:text-sm text-slate-500 font-medium">Tracking your lifestyle choices</p>
           </div>
-          <button onClick={() => navigate('/')} className="px-4 py-2 bg-pink-600 text-white text-[11px] font-bold rounded-xl shadow-lg shadow-pink-100 active:scale-95 transition-all">
+          <button onClick={() => navigate('/')} aria-label="হোমে ফিরে যান" className="px-4 py-2 bg-pink-600 text-white text-[11px] font-bold rounded-xl shadow-lg shadow-pink-100 active:scale-95 transition-all">
             Shop More
           </button>
         </div>

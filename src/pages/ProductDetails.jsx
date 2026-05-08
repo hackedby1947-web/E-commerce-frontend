@@ -498,6 +498,7 @@
 
 
 import React, { useState } from "react";
+import { thumbImage } from "../utils/imageOptimizer";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ShoppingCart, Heart, Share2, Star, Minus, Plus, ShieldCheck, Truck, ArrowRight } from "lucide-react";
 import { useCart } from '../context/CartContext';
@@ -640,7 +641,7 @@ useEffect(() => {
               <div className="sticky top-10">
                 <div className="aspect-4/3 md:aspect-auto md:h-140  rounded-0 md:rounded-2xl overflow-hidden bg-gray-50 group relative">
                   <img
-                    src={selectedImage}
+                    src={detailImage(selectedImage)}
                     alt={product.title}
                     className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-110"
                   />
@@ -660,7 +661,7 @@ useEffect(() => {
                         selectedImage === img ? "border-indigo-600 ring-2 ring-indigo-50" : "border-gray-100 opacity-60"
                       }`}
                     >
-                      <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
+                      <img src={thumbImage(img)} loading="lazy" alt="thumbnail" className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
@@ -712,7 +713,7 @@ useEffect(() => {
               : "border-gray-100 opacity-60"
           }`}
         >
-          <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
+          <img src={thumbImage(img)} loading="lazy" alt="thumbnail" className="w-full h-full object-cover" />
         </button>
       ))}
     </div>
@@ -756,10 +757,10 @@ useEffect(() => {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setWishlist(!wishlist)} className="p-2 rounded-full bg-gray-50">
+                    <button onClick={() => setWishlist(!wishlist)} aria-label="উইশলিস্টে যোগ করুন" className="p-2 rounded-full bg-gray-50">
                       <Heart size={18} className={wishlist ? "text-red-500 fill-red-500" : "text-gray-400"} />
                     </button>
-                    <button className="p-2 rounded-full bg-gray-50">
+                    <button aria-label="শেয়ার করুন" className="p-2 rounded-full bg-gray-50">
                       <Share2 size={18} className="text-gray-400" />
                     </button>
                   </div>
@@ -787,6 +788,7 @@ useEffect(() => {
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
+                      aria-label={`রঙ নির্বাচন করুন: ${color}`}
                       className={`px-4 py-1.5 md:px-6 md:py-2.5 rounded-lg md:rounded-xl text-xs font-bold border-2 transition-all ${
                         selectedColor === color 
                         ? "border-indigo-600 bg-indigo-600 text-white" 
@@ -804,9 +806,9 @@ useEffect(() => {
                 <div className="flex items-center gap-4">
                   <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Quantity:</span>
                   <div className="flex items-center bg-gray-100 rounded-xl p-1">
-                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-2 hover:bg-white rounded-lg transition-all"><Minus size={18}/></button>
+                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} aria-label="Decrease quantity" className="p-2 hover:bg-white rounded-lg transition-all"><Minus size={18}/></button>
                     <span className="w-10 text-center font-bold text-lg">{quantity}</span>
-                    <button onClick={() => setQuantity(q => Math.min(product.stock || 10, q + 1))} className="p-2 hover:bg-white rounded-lg transition-all"><Plus size={18}/></button>
+                    <button onClick={() => setQuantity(q => Math.min(product.stock || 10, q + 1))} aria-label="Increase quantity" className="p-2 hover:bg-white rounded-lg transition-all"><Plus size={18}/></button>
                   </div>
                 </div>
 
@@ -839,11 +841,13 @@ useEffect(() => {
     addToCart({...product, quantity, selectedColor, selectedImage});
     toast.success('Cart-এ Add করা হয়েছে! 🛍️', {
       duration: 2000,
-      style: {
-        borderRadius: '12px',
-        background: '#333',
-        color: '#fff',
-      },
+      id: 'cart-toast',
+     style: {
+    borderRadius: '12px',
+    background: '#333',
+    color: '#fff',
+    zIndex: 9999, // নিশ্চিত করুন এটি অন্য সব এলিমেন্টের উপরে আছে
+  },
     });
   }} 
   className="flex-1 h-14 bg-white border-2 border-indigo-600 text-indigo-600 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-50 transition-all active:scale-95"
@@ -854,7 +858,13 @@ useEffect(() => {
       {/* Dynamic Button (Order Now / Request Stock / Requested) */}
       <button 
         onClick={product.inStock 
-          ? () => navigate('/checkout', { state: { productDetails: {...product, quantity, selectedColor, selectedImage} }}) 
+          ? () => {
+              const colorToUse = selectedColor || product.colors?.[0] || '';
+              const imageToUse = selectedImage || product.images?.[0] || '';
+              navigate('/checkout', { 
+                state: { productDetails: { ...product, quantity, selectedColor: colorToUse, selectedImage: imageToUse } } 
+              });
+            }
           : handleRequestStock
         }
         // ক্লিক করার পর বাটন ডিজেবল হয়ে যাবে যতক্ষণ না রিফ্রেশ দিচ্ছে
@@ -1003,7 +1013,13 @@ useEffect(() => {
 
  <button 
         onClick={product.inStock 
-          ? () => navigate('/checkout', { state: { productDetails: {...product, quantity, selectedColor, selectedImage} }}) 
+          ? () => {
+              const colorToUse = selectedColor || product.colors?.[0] || '';
+              const imageToUse = selectedImage || product.images?.[0] || '';
+              navigate('/checkout', { 
+                state: { productDetails: { ...product, quantity, selectedColor: colorToUse, selectedImage: imageToUse } } 
+              });
+            }
           : handleRequestStock
         }
         // ক্লিক করার পর বাটন ডিজেবল হয়ে যাবে যতক্ষণ না রিফ্রেশ দিচ্ছে
@@ -1025,7 +1041,21 @@ useEffect(() => {
         )}
       </button>
 
-        <button onClick={() => addToCart({...product, quantity, selectedColor, selectedImage})} className="flex-1 h-12 bg-gray-900 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2">
+        <button 
+          onClick={() => {
+    addToCart({...product, quantity, selectedColor, selectedImage});
+    toast.success('Cart-এ Add করা হয়েছে! 🛍️', {
+      duration: 2000,
+      id: 'cart-toast',
+     style: {
+    borderRadius: '12px',
+    background: '#333',
+    color: '#fff',
+    zIndex: 9999, // নিশ্চিত করুন এটি অন্য সব এলিমেন্টের উপরে আছে
+  },
+    });
+  }} 
+        className="flex-1 h-12 bg-gray-900 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2">
            Cart
         </button>
       </div>

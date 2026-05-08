@@ -94,7 +94,7 @@ export default function Hero() {
                 </p>
                 
                 <div className="flex justify-center md:justify-start">
-                  <button className={`flex items-center gap-2 px-5 py-2.5 md:px-8 md:py-4 ${slide.btnColor} text-white rounded-xl md:rounded-2xl font-bold text-sm md:text-base shadow-lg transition active:scale-95`}>
+                  <button aria-label={slide.btnText || "আরো দেখুন"} className={`flex items-center gap-2 px-5 py-2.5 md:px-8 md:py-4 ${slide.btnColor} text-white rounded-xl md:rounded-2xl font-bold text-sm md:text-base shadow-lg transition active:scale-95`}>
                     <PlayCircle size={18} className="md:w-5 md:h-5" />
                     <span>Live Now</span>
                   </button>

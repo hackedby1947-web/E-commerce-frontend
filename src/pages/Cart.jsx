@@ -99,7 +99,7 @@
 //           <div
           
 //           className="bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-100">
-//             <button onClick={handleSelectAll} className="flex items-center gap-3">
+//             <button onClick={handleSelectAll} aria-label="সব পণ্য সিলেক্ট করুন" className="flex items-center gap-3">
 //               {isAllSelected ? (
 //                 <CheckCircle2
                 
@@ -157,7 +157,7 @@
 //                 <div className="flex flex-col sm:flex-row gap-5">
 //                   {/* ইমেজ এবং ডিসকাউন্ট % */}
 //                   <div className="w-full sm:w-32 h-32 bg-gray-50 rounded-2xl overflow-hidden shrink-0 relative border border-gray-100">
-//                     <img src={item.images?.[0]} alt={item.title} className="w-full h-full object-cover" />
+//                     <img src={item.images?.[0]} alt={item.title} loading="lazy" className="w-full h-full object-cover" />
 //                     {discountPercent && (
 //                       <div className="absolute top-2 left-2 bg-pink-600 text-white text-[10px] font-black px-2 py-1 rounded-lg">
 //                         -{discountPercent}% OFF
@@ -337,7 +337,7 @@ export default function Cart() {
 
           {/* Select All Bar */}
           <div className="bg-white p-4 rounded-2xl flex items-center justify-between shadow-sm border border-gray-100">
-            <button onClick={handleSelectAll} className="flex items-center gap-3">
+            <button onClick={handleSelectAll} aria-label="সব পণ্য সিলেক্ট করুন" className="flex items-center gap-3">
               {isAllSelected ? (
                 <CheckCircle2 className="text-pink-600 fill-pink-50" size={24} />
               ) : (
@@ -348,6 +348,7 @@ export default function Cart() {
             {selectedItems.length > 0 && (
               <button
                 onClick={() => setCartItems(prev => prev.filter(i => !i.selected))}
+                aria-label="সিলেক্ট করা পণ্য মুছুন"
                 className="text-red-500 font-bold text-xs uppercase tracking-wider"
               >
                 Delete Selected
@@ -396,7 +397,7 @@ export default function Cart() {
                 <div className="flex flex-col sm:flex-row gap-5">
                   {/* Image */}
                   <div className="w-full sm:w-32 h-32 bg-gray-50 rounded-2xl overflow-hidden shrink-0 relative border border-gray-100">
-                    <img src={item.images?.[0]} alt={item.title} className="w-full h-full object-cover" />
+                    <img src={item.images?.[0]} alt={item.title} loading="lazy" className="w-full h-full object-cover" />
                     {discountPercent && (
                       <div className="absolute top-2 left-2 bg-pink-600 text-white text-[10px] font-black px-2 py-1 rounded-lg">
                         -{discountPercent}% OFF
@@ -448,14 +449,16 @@ export default function Cart() {
                     <div className="flex items-center justify-between mt-6">
                       <div className="flex items-center bg-gray-50 rounded-xl border border-gray-200 p-1">
                         <button
-                          onClick={() => updateQty(item._id, -1)}   // ✅ fix
+                          onClick={() => updateQty(item._id, -1)}
+                          aria-label="পরিমাণ কমান"
                           className="w-8 h-8 flex items-center justify-center hover:bg-white rounded-lg transition-all"
                         >
                           <Minus size={14} />
                         </button>
                         <p className="px-5 font-black text-gray-800">{item.quantity || 1}</p>
                         <button
-                          onClick={() => updateQty(item._id, 1)}    // ✅ fix
+                          onClick={() => updateQty(item._id, 1)}
+                          aria-label="পরিমাণ বাড়ান"
                           className="w-8 h-8 flex items-center justify-center hover:bg-white rounded-lg transition-all"
                         >
                           <Plus size={14} />

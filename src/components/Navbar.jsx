@@ -133,7 +133,7 @@
 //               </span>
 //             )}
 //           </Link>
-//           <button onClick={handleProfileClick} className="flex flex-col items-center">
+//           <button onClick={handleProfileClick} aria-label="প্রোফাইল দেখুন" className="flex flex-col items-center">
 //             <User size={20} className={location.pathname === "/profile" ? "text-indigo-400" : "text-gray-400"} />
 //             <span className="text-[9px] mt-0.5">Profile</span>
 //           </button>
@@ -237,7 +237,7 @@ const handleCategoryClick = (cat) => {
           </div>
 
           <div className="flex items-center gap-5">
-            <Link to="/cart" className="relative">
+            <Link to="/cart" aria-label="কার্ট দেখুন" className="relative">
               <ShoppingCart size={24} className="text-slate-100 hover:text-indigo-300" />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full border-2 border-indigo-900">
@@ -245,7 +245,7 @@ const handleCategoryClick = (cat) => {
                 </span>
               )}
             </Link>
-            <button onClick={handleProfileClick} className="text-white hover:text-indigo-300">
+            <button onClick={handleProfileClick} aria-label="প্রোফাইল দেখুন" className="text-white hover:text-indigo-300">
               <User size={24} />
             </button>
           </div>
@@ -266,12 +266,12 @@ const handleCategoryClick = (cat) => {
               <Mic size={18} className="absolute right-12 text-gray-400" />
               <button 
                 onClick={executeSearch}
-                className="absolute right-0 top-0 bottom-0 bg-indigo-600 text-white px-4 flex items-center justify-center active:bg-indigo-700"
+                aria-label="সার্চ করুন" className="absolute right-0 top-0 bottom-0 bg-indigo-600 text-white px-4 flex items-center justify-center active:bg-indigo-700"
               >
                 <Search size={18} />
               </button>
             </div>
-            <button className="bg-white/10 p-2 rounded-lg border border-white/20 text-white h-10 w-10 flex items-center justify-center">
+            <button aria-label="স্ক্যান করুন" className="bg-white/10 p-2 rounded-lg border border-white/20 text-white h-10 w-10 flex items-center justify-center">
               <Scan size={20} />
             </button>
           </div>
@@ -323,7 +323,7 @@ const handleCategoryClick = (cat) => {
               </span>
             )}
           </Link>
-          <button onClick={handleProfileClick} className="flex flex-col items-center">
+          <button onClick={handleProfileClick} aria-label="প্রোফাইল দেখুন" className="flex flex-col items-center">
             <User size={20} className={location.pathname === "/profile" ? "text-indigo-400" : "text-gray-400"} />
             <span className="text-[9px] mt-0.5">Profile</span>
           </button>

@@ -281,7 +281,7 @@ const OrderSuccess = () => {
         <div className="bg-gray-50 rounded-2xl sm:rounded-3xl p-5 sm:p-6 mb-2 text-left border border-gray-100 space-y-4">
           <div className="flex justify-between items-center border-b border-gray-200/60 pb-3">
             <span className="text-gray-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">অর্ডার আইডি</span>
-            <button onClick={copyOrderId} className="flex items-center gap-1.5 text-gray-700 active:opacity-50 transition-opacity">
+            <button onClick={copyOrderId} aria-label="অর্ডার আইডি কপি করুন" className="flex items-center gap-1.5 text-gray-700 active:opacity-50 transition-opacity">
               <span className="font-mono font-bold text-xs sm:text-sm">
                 #{order._id?.slice(-8).toUpperCase()}
               </span>
