@@ -74,11 +74,21 @@ export default function Hero() {
           >
             {/* Background Image - এখন ১০০% ক্লিয়ার (full visibility) */}
             <div className="absolute inset-0">
-              <img 
+              {/* <img 
                 src={slide.image} 
                 className="w-full h-full object-cover" // Removed extra opacity
                 alt="hero" 
-              />
+              /> */}
+              <img 
+  src={slide.image}
+  className="w-full h-full object-cover"
+  alt={slide.titleBangla}
+  width={1200}
+  height={600}
+  loading={index === 0 ? "eager" : "lazy"}
+  fetchPriority={index === 0 ? "high" : "low"}
+  decoding={index === 0 ? "sync" : "async"}
+/>
               {/* Overlay: পিসিতে সাদা গ্রাডিয়েন্ট, মোবাইলে কালো গ্রাডিয়েন্ট (লেখা স্পষ্ট করার জন্য) */}
               <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent md:from-white/90 md:via-white/40 md:to-transparent"></div>
             </div>
@@ -143,10 +153,6 @@ export default function Hero() {
         </div>
       </div>
 
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap');
-        .bn-font { font-family: 'Hind Siliguri', sans-serif; }
-      `}</style>
     </section>
   );
 }

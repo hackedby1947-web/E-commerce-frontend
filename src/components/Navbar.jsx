@@ -205,7 +205,7 @@ const handleCategoryClick = (cat) => {
       <nav className="sticky top-0 z-50 bg-indigo-900 shadow-md">
         {/* DESKTOP VIEW */}
         <div className="hidden md:flex max-w-7xl mx-auto px-6 py-3 items-center justify-between border-b border-white/10">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" aria-label="home" className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-xl overflow-hidden">
   <img
     src="/favicon.svg"
@@ -263,15 +263,15 @@ const handleCategoryClick = (cat) => {
                 onKeyDown={handleKeyDown}
                 className="w-full pl-3 pr-20 py-1 text-sm text-gray-700 focus:outline-none"
               />
-              <Mic size={18} className="absolute right-12 text-gray-400" />
+              <Mic aria-hidden="true" size={18} className="absolute right-12 text-gray-400" />
               <button 
                 onClick={executeSearch}
-                aria-label="সার্চ করুন" className="absolute right-0 top-0 bottom-0 bg-indigo-600 text-white px-4 flex items-center justify-center active:bg-indigo-700"
+                aria-label="Search" className="absolute right-0 top-0 bottom-0 bg-indigo-600 text-white px-4 flex items-center justify-center active:bg-indigo-700"
               >
                 <Search size={18} />
               </button>
             </div>
-            <button aria-label="স্ক্যান করুন" className="bg-white/10 p-2 rounded-lg border border-white/20 text-white h-10 w-10 flex items-center justify-center">
+            <button aria-label="Scan" className="bg-white/10 p-2 rounded-lg border border-white/20 text-white h-10 w-10 flex items-center justify-center">
               <Scan size={20} />
             </button>
           </div>
@@ -331,10 +331,7 @@ const handleCategoryClick = (cat) => {
       </div>
       {/* <BottomNav/> */}
 
-      <style>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
+    
     </>
   );
 }
