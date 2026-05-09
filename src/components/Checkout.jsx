@@ -347,9 +347,22 @@ const orderData = {
     selectedColor: item.selectedColor || null
   })),
   deliveryInfo: deliveryData,
-  fbp: getCookie("_fbp"),   // ← এটুকু add করো
-  fbc: getCookie("_fbc"),   // ← এটুকু add করো
+  fbp: getCookie("_fbp"),
+  fbc: getCookie("_fbc"),
+  email: user?.email || null,   // ✅ email → match score বাড়াবে
+  eventId: `InitiateCheckout_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, // ✅ CAPI deduplication
 };
+
+// ✅ fbq InitiateCheckout — Browser pixel fire (CAPI এর সাথে same event_id)
+if (typeof window.fbq === "function") {
+  window.fbq("track", "InitiateCheckout", {
+    value: grandTotal,
+    currency: "BDT",
+    num_items: cartItems.length,
+    content_ids: cartItems.map(item => item._id || item.id),
+    content_type: "product",
+  }, { eventID: orderData.eventId });
+}
 
     const { data } = await api.post("/api/orders", orderData);
 
@@ -368,7 +381,7 @@ const orderData = {
     });
 
     navigate("/order-success", {
-      state: { order: data.order },
+      state: { order: data.order, capiEventId: data.capiEventId },
       replace: true
     });
 
@@ -624,7 +637,7 @@ useEffect(() => {
 
 
                     <p className="text-gray-600 text-[13px]">Standard Delivery</p>
-                    <p className="mt-4 text-gray-500 text-xs font-medium">Guaranteed by 13-15 Mar</p>
+                    <p className="mt-4 text-gray-500 text-xs font-medium">3-5 কার্যদিবসের মধ্যে ডেলিভারি</p>
                   </div>
                 </div>
               </div>
@@ -645,7 +658,7 @@ useEffect(() => {
         </p>
         <p className="text-gray-600 text-[13px]">Standard Delivery</p>
         <p className="mt-4 text-gray-500 text-xs font-medium">
-          Guaranteed by 13-15 Mar
+          3-5 কার্যদিবসের মধ্যে ডেলিভারি
         </p>
       </div>
     </div>
@@ -666,7 +679,7 @@ useEffect(() => {
         </p>
         <p className="text-gray-600 text-[13px]">Standard Delivery</p>
         <p className="mt-4 text-gray-500 text-xs font-medium">
-          Guaranteed by 13-15 Mar
+          3-5 কার্যদিবসের মধ্যে ডেলিভারি
         </p>
       </div>
     </div>

@@ -183,6 +183,7 @@ const OrderSuccess = () => {
   const navigate = useNavigate();
   
   const [order, setOrder] = useState(location.state?.order || null);
+  const capiEventId = location.state?.capiEventId || null;
   const [loading, setLoading] = useState(!order);
 
   useEffect(() => {
@@ -205,6 +206,27 @@ const OrderSuccess = () => {
     };
     fetchOrder();
   }, [id]);
+
+
+  // ✅ fbq Purchase event — Order success page লোড হওয়ার পর fire হবে
+  useEffect(() => {
+    if (!order) return;
+
+    // Purchase event fire — CAPI এর সাথে same event_id দিয়ে deduplication
+    const purchaseEventId = capiEventId || `Purchase_${order._id}_${Date.now()}`;
+
+    if (typeof window.fbq === "function") {
+      window.fbq("track", "Purchase", {
+        value: order.totalAmount,
+        currency: "BDT",
+        order_id: order._id,
+        num_items: order.items?.length || 1,
+        content_ids: order.items?.map(i => i.productId?.toString()) || [],
+        content_type: "product",
+      }, { eventID: purchaseEventId });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order?._id]); // order._id দিয়ে দেওয়া হয়েছে যাতে শুধু একবার fire হয়
 
   useEffect(() => {
     window.history.pushState(null, null, window.location.pathname);
@@ -326,7 +348,7 @@ const OrderSuccess = () => {
         <div className=" pt-2 border-t border-gray-100">
           <div className="flex items-center justify-center gap-2 text-[11px] sm:text-xs text-gray-400 font-medium italic">
             <Phone size={12} className="text-gray-300" />
-            সহযোগিতার জন্য: +৮৮০১৭XXXXXXXX
+            {import.meta.env.VITE_SUPPORT_PHONE || "+৮৮০১XXXXXXXXX"}
           </div>
         </div>
       </div>
