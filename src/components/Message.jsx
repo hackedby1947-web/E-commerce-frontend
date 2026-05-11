@@ -24,7 +24,6 @@ const Messages = ({ userType = "customer" }) => {
       const navbarH = navbar ? navbar.offsetHeight : 88;
       const bottomNavH = window.innerWidth < 768 ? 56 : 0;
       const margin = 16;
-      
       setChatHeight(`calc(100dvh - ${navbarH + bottomNavH + margin}px)`);
     };
 
