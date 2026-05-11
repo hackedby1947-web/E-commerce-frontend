@@ -8,6 +8,7 @@ export default function Layout() {
       <Navbar />
 
       <main className="min-h-screen">
+
         <Outlet />
       </main>
 

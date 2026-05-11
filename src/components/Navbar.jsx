@@ -202,7 +202,8 @@ const handleCategoryClick = (cat) => {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-indigo-900 shadow-md">
+      {/* <nav className="sticky top-0 z-50 bg-indigo-900 shadow-md"> */}
+      <nav id="main-navbar" className="sticky top-0 z-50 bg-indigo-900 shadow-md">
         {/* DESKTOP VIEW */}
         <div className="hidden md:flex max-w-7xl mx-auto px-6 py-3 items-center justify-between border-b border-white/10">
           <Link to="/" aria-label="home" className="flex items-center gap-2">

@@ -12,26 +12,8 @@ const Messages = ({ userType = "customer" }) => {
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState([]);
   const [contacts, setContacts] = useState([]);
-  const [chatHeight, setChatHeight] = useState("calc(100dvh - 160px)"); // ✅ dynamic height
   const chatEndRef = useRef(null);
   const selectedChatRef = useRef(null);
-  const isFirstLoad = useRef(true); // ✅ প্রথম load track করার জন্য
-
-  // ✅ FIX 1: Dynamic height — navbar actual height measure করো
-  useEffect(() => {
-    const updateHeight = () => {
-      const navbar = document.getElementById("main-navbar");
-      const navbarH = navbar ? navbar.offsetHeight : 88;
-      const bottomNavH = window.innerWidth < 768 ? 56 : 0;
-      const margin = 16;
-      
-      setChatHeight(`calc(100dvh - ${navbarH + bottomNavH + margin}px)`);
-    };
-
-    updateHeight();
-    window.addEventListener("resize", updateHeight);
-    return () => window.removeEventListener("resize", updateHeight);
-  }, []);
 
   // ১. selectedChat বদলালে room join করো
   useEffect(() => {
@@ -41,7 +23,7 @@ const Messages = ({ userType = "customer" }) => {
     }
   }, [selectedChat]);
 
-  // ২. conversations fetch (socket refetch এর জন্য callback হিসেবেও রাখা হয়েছে)
+  // ২. conversations fetch
   const fetchConversations = useCallback(async () => {
     try {
       if (userType === "admin") {
@@ -50,7 +32,7 @@ const Messages = ({ userType = "customer" }) => {
       } else if (user) {
         const customerChat = { id: user._id, name: user.name };
         setContacts([customerChat]);
-        setSelectedChat((prev) => prev ?? customerChat);
+        setSelectedChat(customerChat);
       }
     } catch (err) {
       console.error("Fetch Conversations Error:", err);
@@ -58,46 +40,26 @@ const Messages = ({ userType = "customer" }) => {
   }, [user, userType]);
 
   useEffect(() => {
-    let cancelled = false;
-    const run = async () => {
-      try {
-        if (userType === "admin") {
-          const res = await api.get("/api/messages/conversations");
-          if (!cancelled) setContacts(res.data);
-        } else if (user) {
-          const customerChat = { id: user._id, name: user.name };
-          if (!cancelled) {
-            setContacts([customerChat]);
-            setSelectedChat((prev) => prev ?? customerChat);
-          }
-        }
-      } catch (err) {
-        console.error("Fetch Conversations Error:", err);
-      }
-    };
-    run();
-    return () => { cancelled = true; };
-  }, [user, userType]);
+    fetchConversations();
+  }, [fetchConversations]);
 
   // ৩. messages fetch
+  const fetchMessages = useCallback(async (contactId) => {
+    try {
+      const res = await api.get(`/api/messages/${contactId}`);
+      setMessages(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
   useEffect(() => {
-    if (!selectedChat) return;
-    let cancelled = false;
-    isFirstLoad.current = true;
-    const run = async () => {
-      try {
-        const res = await api.get(`/api/messages/${selectedChat.id}`);
-        if (!cancelled) setMessages(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    run();
-    return () => { cancelled = true; };
-  }, [selectedChat]);
+    if (selectedChat) fetchMessages(selectedChat.id);
+  }, [selectedChat, fetchMessages]);
 
   // ৪. ✅ Socket connect + realtime listener
   useEffect(() => {
+    // socket আগে থেকে connect না থাকলে connect করো
     if (!socket.connected) socket.connect();
 
     const handleNewMessage = (msg) => {
@@ -119,8 +81,8 @@ const Messages = ({ userType = "customer" }) => {
     socket.on("newMessageAdmin", handleNewMessage);
 
     return () => {
-      socket.off("newMessage", handleNewMessage);
-      socket.off("newMessageAdmin", handleNewMessage);
+      socket.off("newMessage", handleNewMessage);      // ✅ handler reference দিয়ে off করো
+      socket.off("newMessageAdmin", handleNewMessage); // নইলে পুরানো listener থেকে যায়
     };
   }, [userType, fetchConversations]);
 
@@ -143,25 +105,13 @@ const Messages = ({ userType = "customer" }) => {
     }
   };
 
-  // ✅ FIX 2: Auto scroll — প্রথম load এ page scroll হবে না
+  // ৬. auto scroll
   useEffect(() => {
-    if (!chatEndRef.current) return;
-
-    if (isFirstLoad.current) {
-      // প্রথম load: chat box এর ভেতরে instant scroll, window scroll না
-      chatEndRef.current.scrollIntoView({ block: "end" });
-      isFirstLoad.current = false;
-    } else {
-      // নতুন message: smooth scroll
-      chatEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-    }
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    <div
-      className="flex bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden m-2 md:m-5"
-      style={{ height: chatHeight }} // ✅ dynamic height
-    >
+    <div className="flex h-[80vh] bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden m-2 md:m-5">
       {/* Sidebar — admin only */}
       {userType === "admin" && (
         <div className={`w-full md:w-80 bg-gray-50 border-r border-gray-200 flex flex-col ${selectedChat ? 'hidden md:flex' : 'flex'}`}>
@@ -221,10 +171,11 @@ const Messages = ({ userType = "customer" }) => {
             </div>
 
             <div className="flex-1 p-6 overflow-y-auto space-y-4">
-              {messages.map((msg, index) => {
+              {messages.map((msg) => {
                 const isMe = userType === "admin" ? msg.sender === "admin" : msg.sender !== "admin";
                 return (
-                  <div key={msg._id || index} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+                  // eslint-disable-next-line react-hooks/purity
+                  <div key={msg._id || Math.random()} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
                     <div className={`max-w-[75%] md:max-w-[60%] p-4 shadow-sm ${
                       isMe
                         ? "bg-indigo-600 text-white rounded-2xl rounded-tr-none"
@@ -272,3 +223,4 @@ const Messages = ({ userType = "customer" }) => {
 };
 
 export default Messages;
+

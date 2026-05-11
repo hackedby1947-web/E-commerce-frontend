@@ -30,7 +30,13 @@ const OrderSuccess       = lazy(() => import("./components/OrderSuccess"));
 const RelatedPage        = lazy(() => import("./components/relatedProducts/RelatedPage"));
 const Payment            = lazy(() => import("./sslpayments/Payment"));
 const PaymentError       = lazy(() => import("./sslpayments/PaymentError"));
-const PrivacyPolicy      = lazy(() => import("./components/PrivacyPolicy"));
+const PrivacyPolicy      = lazy(() => import("./components/privacypolicy/PrivacyPolicy"));
+const RefundPolicy       = lazy(() => import("./components/privacypolicy/RefundPolicy"));
+const FAQS               = lazy(() => import("./components/privacypolicy/FAQPage"));
+const Terms              = lazy(() => import("./components/privacypolicy/TermsAndConditions"));
+
+
+
 
 // ✅ QueryClient — aggressive caching
 const queryClient = new QueryClient({
@@ -86,6 +92,9 @@ function App() {
                   <Route path="/payment"                 element={<Payment />} />
                   <Route path="/payment-error"           element={<PaymentError />} />
                   <Route path="/privacy-policy"          element={<PrivacyPolicy />} />
+                  <Route path="/refund-policy"           element={<RefundPolicy />} />
+                  <Route path="/faqs"                    element={<FAQS />} />
+                  <Route path="/terms"                   element={<Terms />} />
                   <Route path="/login"                   element={<Login />} />
                   <Route path="/register"                element={<Register />} />
 

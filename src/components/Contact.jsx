@@ -1,21 +1,46 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, Facebook, Instagram, Twitter } from 'lucide-react';
 import toast from 'react-hot-toast';
+import api from '../api';
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
 
-  const handleSubmit = (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
     const loadingToast = toast.loading("বার্তা পাঠানো হচ্ছে...");
-    
-    // এখানে আপনার API কল হবে
-    setTimeout(() => {
-      toast.success("আপনার বার্তা সফলভাবে আমাদের কাছে পৌঁছেছে!", { id: loadingToast });
+
+    try {
+      await api.post('/api/tickets', formData);
+      toast.success("আপনার বার্তা সফলভাবে পৌঁছেছে! ✅", { id: loadingToast });
       setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 1500);
+
+    } catch (err) {
+      // ✅ duplicate ticket হলে আলাদা message
+      if (err.response?.status === 409) {
+        toast.error(err.response.data.message, { id: loadingToast, duration: 5000 });
+      } else {
+        const message = err.response?.data?.message || "সার্ভারের সাথে সংযোগ হচ্ছে না!";
+        toast.error(message, { id: loadingToast });
+      }
+    }
   };
 
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+//   const loadingToast = toast.loading("বার্তা পাঠানো হচ্ছে...");
+
+//   try {
+//     await api.post('/api/tickets', formData); // ✅ res সরিয়ে দিন
+
+//     toast.success("আপনার বার্তা সফলভাবে পৌঁছেছে! ✅", { id: loadingToast });
+//     setFormData({ name: '', email: '', subject: '', message: '' });
+
+//   } catch (err) {
+//     const message = err.response?.data?.message || "সার্ভারের সাথে সংযোগ হচ্ছে না!";
+//     toast.error(message, { id: loadingToast });
+//   }
+// };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -32,55 +57,8 @@ const Contact = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white rounded-3xl shadow-xl overflow-hidden">
-          {/* Contact Information */}
-          <div className="bg-indigo-600 p-10 text-white flex flex-col justify-between">
-            <div>
-              <h3 className="text-2xl font-bold mb-8">যোগাযোগের তথ্য</h3>
-              <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="bg-indigo-500 p-3 rounded-xl">
-                    <Phone size={24} />
-                  </div>
-                  <div>
-                    <p className="text-indigo-100 text-sm">কল করুন</p>
-                    <p className="font-semibold">+880 1XXX-XXXXXX</p>
-                  </div>
-                </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="bg-indigo-500 p-3 rounded-xl">
-                    <Mail size={24} />
-                  </div>
-                  <div>
-                    <p className="text-indigo-100 text-sm">ইমেইল করুন</p>
-                    <p className="font-semibold">support@royalcarti.com</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="bg-indigo-500 p-3 rounded-xl">
-                    <MapPin size={24} />
-                  </div>
-                  <div>
-                    <p className="text-indigo-100 text-sm">অফিস ঠিকানা</p>
-                    <p className="font-semibold">ঢাকা, বাংলাদেশ</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Social Icons */}
-            <div className="mt-12">
-              <p className="text-indigo-100 mb-4 uppercase tracking-widest text-xs font-bold">Follow Us</p>
-              <div className="flex gap-4">
-                <a href="#" className="hover:text-indigo-200 transition-colors"><Facebook size={24} /></a>
-                <a href="#" className="hover:text-indigo-200 transition-colors"><Instagram size={24} /></a>
-                <a href="#" className="hover:text-indigo-200 transition-colors"><Twitter size={24} /></a>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Form */}
+            {/* Contact Form */}
           <div className="p-10">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -144,6 +122,58 @@ const Contact = () => {
               </button>
             </form>
           </div>
+
+
+
+          {/* Contact Information */}
+          <div className="bg-indigo-600 p-10 text-white flex flex-col justify-between">
+            <div>
+              <h3 className="text-2xl font-bold mb-8">যোগাযোগের তথ্য</h3>
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="bg-indigo-500 p-3 rounded-xl">
+                    <Phone size={24} />
+                  </div>
+                  <div>
+                    <p className="text-indigo-100 text-sm">কল করুন</p>
+                    <p className="font-semibold">+880 1XXX-XXXXXX</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="bg-indigo-500 p-3 rounded-xl">
+                    <Mail size={24} />
+                  </div>
+                  <div>
+                    <p className="text-indigo-100 text-sm">ইমেইল করুন</p>
+                    <p className="font-semibold">support@royalcartx.com</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="bg-indigo-500 p-3 rounded-xl">
+                    <MapPin size={24} />
+                  </div>
+                  <div>
+                    <p className="text-indigo-100 text-sm">অফিস ঠিকানা</p>
+                    <p className="font-semibold">ঢাকা, বাংলাদেশ</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Social Icons */}
+            <div className="mt-12">
+              <p className="text-indigo-100 mb-4 uppercase tracking-widest text-xs font-bold">Follow Us</p>
+              <div className="flex gap-4">
+                <a href="https://www.facebook.com/royalsareehouse1" className="hover:text-indigo-200 transition-colors"><Facebook size={24} /></a>
+                <a href="https://www.instagram.com/royalsareehouse1" className="hover:text-indigo-200 transition-colors"><Instagram size={24} /></a>
+                <a href="https://twitter.com/royalsareehouse1" className="hover:text-indigo-200 transition-colors"><Twitter size={24} /></a>
+              </div>
+            </div>
+          </div>
+
+        
         </div>
       </div>
     </div>
