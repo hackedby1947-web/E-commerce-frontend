@@ -282,7 +282,7 @@ const handleConfirmOrder = async () => {
     if (!formData.phone?.trim()) newErrors.phone = "ফোন নম্বরটি প্রয়োজন";
     if (!formData.division) newErrors.division = "বিভাগ সিলেক্ট করুন";
     if (!formData.district) newErrors.district = "জেলা সিলেক্ট করুন";
-    if (!formData.upazila) newErrors.upazila = "উপজেলা সিলেক্ট করুন";
+    // if (!formData.upazila) newErrors.upazila = "উপজেলা সিলেক্ট করুন";
     // if (!formData.address?.trim()) newErrors.address = "বিস্তারিত ঠিকানা লিখুন";
     if (!formData.house?.trim()) newErrors.house = "home ঠিকানা লিখুন";
 
