@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import { FcGoogle } from "react-icons/fc";
-import { signInWithPopup } from "firebase/auth";
+// import { signInWithPopup } from "firebase/auth";
+import { signInWithRedirect } from "firebase/auth";  // signInWithPopup সরাও
+
 import { auth, provider } from "../firebase";
 import api from "../api";
 import toast from "react-hot-toast";
@@ -147,68 +149,51 @@ const handleLogin = async (e) => {
   }
 };
 
+const handleGoogleLogin = async () => {
+  try {
+    await signInWithRedirect(auth, provider);
+  } catch {
+    toast.error("গুগল লগইন ব্যর্থ হয়েছে");
+  }
+};
 // const handleGoogleLogin = async () => {
+//   // লোডিং শুরু
+//   const googleToast = toast.loading("গুগল দিয়ে লগইন হচ্ছে...");
+
 //   try {
 //     const result = await signInWithPopup(auth, provider);
 //     const user = result.user;
 
-//     // Backend এ send করো
+//     // Backend এ ডাটা পাঠানো
 //     const res = await api.post(
 //       "/api/auth/google",
 //       { name: user.displayName, email: user.email },
-//       { withCredentials: true } // HttpOnly cookie পাঠানোর জন্য
+//       { withCredentials: true }
 //     );
 
-//     // save user in context + access token
-//     login(res.data.user, res.data.accessToken); // 🔑 token saved
+//     // ১. কনটেক্সট আপডেট
+//     login(res.data.user, res.data.accessToken);
 
+//     // ২. সাকসেস টোস্ট (একই পপআপে)
+//     toast.success(`স্বাগতম, ${user.displayName}!`, { id: googleToast });
+
+//     // ৩. রিডাইরেক্ট
 //     navigate("/");
+
 //   } catch (error) {
-//     console.log(error.message);
+//     // এরর মেসেজ হ্যান্ডলিং
+//     const errorMessage = error.code === 'auth/popup-closed-by-user' 
+//       ? "লগইন উইন্ডো বন্ধ করা হয়েছে" 
+//       : "গুগল লগইন ব্যর্থ হয়েছে";
+
+//     toast.error(errorMessage, { id: googleToast });
+
 //     setErrors((prev) => ({
 //       ...prev,
-//       api: "Google login failed"
+//       api: errorMessage
 //     }));
 //   }
 // };
-const handleGoogleLogin = async () => {
-  // লোডিং শুরু
-  const googleToast = toast.loading("গুগল দিয়ে লগইন হচ্ছে...");
-
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-
-    // Backend এ ডাটা পাঠানো
-    const res = await api.post(
-      "/api/auth/google",
-      { name: user.displayName, email: user.email },
-      { withCredentials: true }
-    );
-
-    // ১. কনটেক্সট আপডেট
-    login(res.data.user, res.data.accessToken);
-
-    // ২. সাকসেস টোস্ট (একই পপআপে)
-    toast.success(`স্বাগতম, ${user.displayName}!`, { id: googleToast });
-
-    // ৩. রিডাইরেক্ট
-    navigate("/");
-
-  } catch (error) {
-    // এরর মেসেজ হ্যান্ডলিং
-    const errorMessage = error.code === 'auth/popup-closed-by-user' 
-      ? "লগইন উইন্ডো বন্ধ করা হয়েছে" 
-      : "গুগল লগইন ব্যর্থ হয়েছে";
-
-    toast.error(errorMessage, { id: googleToast });
-
-    setErrors((prev) => ({
-      ...prev,
-      api: errorMessage
-    }));
-  }
-};
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-indigo-900 via-purple-900 to-pink-900 p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 space-y-6">
