@@ -636,37 +636,7 @@ useEffect(() => {
         <div className="bg-white md:rounded-3xl shadow-sm overflow-hidden border border-gray-100">
           <div className="grid grid-cols-1 md:grid-cols-2">
             
-            {/* Left Column: Image Gallery */}
-            {/* <div className="p-0 md:p-8 bg-white">
-              <div className="sticky top-10">
-                <div className="aspect-4/3 md:aspect-auto md:h-140  rounded-0 md:rounded-2xl overflow-hidden bg-gray-50 group relative">
-                  <img
-                    src={detailImage(selectedImage)}
-                    alt={product.title}
-                    className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-110"
-                  />
-                  {discount > 0 && (
-                    <span className="absolute top-3 left-3 bg-red-600 text-white text-[10px] md:text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                      -{discount}% OFF
-                    </span>
-                  )}
-                </div>
-                
-                <div className="flex gap-2 mt-3 md:mt-6 px-3 md:px-0 overflow-x-auto pb-2 no-scrollbar">
-                  {product.images.map((img, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setSelectedImage(img)}
-                      className={`relative min-w-15 h-15 md:min-w-17.5 md:h-17.5 rounded-lg md:rounded-xl overflow-hidden border-2 transition-all ${
-                        selectedImage === img ? "border-indigo-600 ring-2 ring-indigo-50" : "border-gray-100 opacity-60"
-                      }`}
-                    >
-                      <img src={thumbImage(img)} loading="lazy" alt="thumbnail" className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div> */}
+           
 
 
    <div className="p-0 md:p-8 bg-white">
@@ -773,7 +743,7 @@ useEffect(() => {
                   {product.oldprice && (
                     <span className="text-base md:text-xl text-gray-400 line-through">৳{product.oldprice}</span>
                   )}
-                    <span className="text-green-600 text-sm font-semibold bg-green-100 px-2 py-0.5 rounded">-{discount}% OFF</span>
+                    <span className="text-green-600 text-sm font-semibold bg-green-100 px-2 py-0.5 rounded">{discount}% OFF</span>
 
                 </div>
                 <p className={`text-[11px] font-bold ${product.inStock ? "text-green-600" : "text-red-500"}`}>
