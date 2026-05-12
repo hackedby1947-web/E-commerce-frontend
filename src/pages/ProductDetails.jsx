@@ -743,7 +743,7 @@ useEffect(() => {
                   {product.oldprice && (
                     <span className="text-base md:text-xl text-gray-400 line-through">৳{product.oldprice}</span>
                   )}
-                    <span className="text-green-600 text-sm font-semibold bg-green-100 px-2 py-0.5 rounded">{discount}% OFF</span>
+                    <span className="text-green-600 text-sm font-semibold bg-green-100 px-2 py-0.5 rounded">-{discount}% OFF</span>
 
                 </div>
                 <p className={`text-[11px] font-bold ${product.inStock ? "text-green-600" : "text-red-500"}`}>
