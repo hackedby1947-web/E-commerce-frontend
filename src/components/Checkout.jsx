@@ -270,6 +270,23 @@ useEffect(() => {
 }, [selectedAddress]);
 
 
+useEffect(() => {
+  if (!cartItems.length) return;
+  if (typeof window.fbq === "function") {
+    window.fbq("track", "InitiateCheckout", {
+      value: grandTotal,
+      currency: "BDT",
+      num_items: cartItems.length,
+      content_ids: cartItems.map(item => item._id || item.id),
+      content_type: "product",
+    });
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, []); // শুধু একবার — page load এ
+
+
+
+
 
 
 // only Cash On Delivery (COD) available for now, so no payment integration yet. Order confirm করার সাথে সাথে অর্ডার প্লেস হয়ে যাবে।
@@ -354,15 +371,15 @@ const orderData = {
 };
 
 // ✅ fbq InitiateCheckout — Browser pixel fire (CAPI এর সাথে same event_id)
-if (typeof window.fbq === "function") {
-  window.fbq("track", "InitiateCheckout", {
-    value: grandTotal,
-    currency: "BDT",
-    num_items: cartItems.length,
-    content_ids: cartItems.map(item => item._id || item.id),
-    content_type: "product",
-  }, { eventID: orderData.eventId });
-}
+// if (typeof window.fbq === "function") {
+//   window.fbq("track", "InitiateCheckout", {
+//     value: grandTotal,
+//     currency: "BDT",
+//     num_items: cartItems.length,
+//     content_ids: cartItems.map(item => item._id || item.id),
+//     content_type: "product",
+//   }, { eventID: orderData.eventId });
+// }
 
     const { data } = await api.post("/api/orders", orderData);
 
