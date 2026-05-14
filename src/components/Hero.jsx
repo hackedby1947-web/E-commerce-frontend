@@ -192,7 +192,7 @@ export default function Hero() {
     {
       icon: <Truck className="w-4 h-4 md:w-6 md:h-6" />,
       title: "Free Delivery",
-      desc: "Orders over $99",
+      desc: "Orders over ৳1500 ",
       color: "bg-orange-50 text-orange-600",
     },
   ];
@@ -262,8 +262,10 @@ export default function Hero() {
                 
                 <div className="flex justify-center md:justify-start">
                   <button 
+
                     style={{ backgroundColor: slide.themeColor }}
                     aria-label={slide.btnText || "আরো দেখুন"} 
+                      onClick={() => window.open("https://www.royalcartx.com/product/6a0187e4eb6044bce4289a1a", "_blank")}
                     className="flex items-center gap-2 px-5 py-2.5 md:px-8 md:py-4 text-white rounded-xl md:rounded-2xl font-bold text-sm md:text-base shadow-lg transition active:scale-95"
                   >
                     <PlayCircle size={18} className="md:w-5 md:h-5" />
