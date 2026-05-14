@@ -270,9 +270,15 @@ useEffect(() => {
 }, [selectedAddress]);
 
 
+// ✅ cartItems ready হওয়ার পর InitiateCheckout fire হবে
+// fbq script load না হলে retry করবে
+const initCheckoutFiredRef = React.useRef(false);
 useEffect(() => {
   if (!cartItems.length) return;
-  if (typeof window.fbq === "function") {
+  if (initCheckoutFiredRef.current) return;
+
+  const fireEvent = () => {
+    if (typeof window.fbq !== "function") return false;
     window.fbq("track", "InitiateCheckout", {
       value: grandTotal,
       currency: "BDT",
@@ -280,9 +286,23 @@ useEffect(() => {
       content_ids: cartItems.map(item => item._id || item.id),
       content_type: "product",
     });
-  }
+    initCheckoutFiredRef.current = true;
+    return true;
+  };
+
+  // fbq already loaded হলে সাথে সাথে fire করো
+  if (fireEvent()) return;
+
+  // না হলে max 3 সেকেন্ড পর্যন্ত retry করো
+  let attempts = 0;
+  const interval = setInterval(() => {
+    attempts++;
+    if (fireEvent() || attempts >= 15) clearInterval(interval);
+  }, 200);
+
+  return () => clearInterval(interval);
 // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []); // শুধু একবার — page load এ
+}, [cartItems]);
 
 
 
@@ -366,20 +386,8 @@ const orderData = {
   deliveryInfo: deliveryData,
   fbp: getCookie("_fbp"),
   fbc: getCookie("_fbc"),
-  email: user?.email || null,   // ✅ email → match score বাড়াবে
-  eventId: `InitiateCheckout_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, // ✅ CAPI deduplication
+  email: user?.email || null,
 };
-
-// ✅ fbq InitiateCheckout — Browser pixel fire (CAPI এর সাথে same event_id)
-// if (typeof window.fbq === "function") {
-//   window.fbq("track", "InitiateCheckout", {
-//     value: grandTotal,
-//     currency: "BDT",
-//     num_items: cartItems.length,
-//     content_ids: cartItems.map(item => item._id || item.id),
-//     content_type: "product",
-//   }, { eventID: orderData.eventId });
-// }
 
     const { data } = await api.post("/api/orders", orderData);
 
@@ -398,7 +406,7 @@ const orderData = {
     });
 
     navigate("/order-success", {
-      state: { order: data.order, capiEventId: data.capiEventId },
+      state: { order: data.order },
       replace: true
     });
 
